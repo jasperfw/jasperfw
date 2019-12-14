@@ -4,9 +4,9 @@ namespace WigeDev\JasperCore\Renderer;
 
 use Exception;
 use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Lifecycle\Response;
 use WigeDev\JasperCore\Renderer\ViewHelper\ViewHelperCollection;
 use WigeDev\JasperCore\Renderer\ViewHelper\ViewHelperInterface;
-use WigeDev\JasperCore\Utility\Response;
 
 /**
  * Class Renderer

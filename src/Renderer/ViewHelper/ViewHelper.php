@@ -2,7 +2,7 @@
 
 namespace WigeDev\JasperCore\Renderer\ViewHelper;
 
-use WigeDev\JasperCore\Utility\Response;
+use WigeDev\JasperCore\Lifecycle\Response;
 
 /**
  * Class ViewHelper

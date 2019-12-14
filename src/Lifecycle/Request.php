@@ -1,6 +1,6 @@
 <?php
 
-namespace WigeDev\JasperCore\Utility;
+namespace WigeDev\JasperCore\Lifecycle;
 
 use WigeDev\JasperCore\Core;
 
@@ -10,7 +10,7 @@ use WigeDev\JasperCore\Core;
  * A request object represents the request either recieved by the application via the web server, or through the command
  * line interface.
  *
- * @package WigeDev\JasperCore\Utility
+ * @package WigeDev\JasperCore\Lifecycle
  */
 class Request
 {
@@ -48,11 +48,7 @@ class Request
      */
     public function __construct()
     {
-        if (isset($_REQUEST['request'])) {
-            $this->uri = $_REQUEST['request'];
-        } else {
-            $this->uri = '/';
-        }
+        $this->uri = $_SERVER['REQUEST_URI'] ?? '/';
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->query = $_GET;
         $this->post = $_POST;

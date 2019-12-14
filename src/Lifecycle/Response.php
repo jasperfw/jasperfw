@@ -1,9 +1,10 @@
 <?php
-namespace WigeDev\JasperCore\Utility;
+namespace WigeDev\JasperCore\Lifecycle;
 
 use WigeDev\JasperCore\Core;
 use WigeDev\JasperCore\Renderer\Renderer;
 use WigeDev\JasperCore\Renderer\ViewHelper\ViewHelper;
+use WigeDev\JasperCore\Utility\HTTPUtilities;
 
 /**
  * Class Response

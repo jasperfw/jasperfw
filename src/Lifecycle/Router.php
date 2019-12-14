@@ -1,6 +1,6 @@
 <?php
 
-namespace WigeDev\JasperCore\Utility;
+namespace WigeDev\JasperCore\Lifecycle;
 
 use Exception;
 use WigeDev\JasperCore\Core;
@@ -12,7 +12,7 @@ use WigeDev\JasperCore\Exception\NoRouteMatchException;
  * Simply put, the router takes a requested URI and routes the request to the appropriate Module, Controller and action
  * following the routing rules that are set in the framework's configuration file.
  *
- * @package WigeDev\JasperCore\Utility
+ * @package WigeDev\JasperCore\Lifecycle
  */
 class Router
 {
