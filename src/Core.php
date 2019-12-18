@@ -12,13 +12,13 @@ use Psr\Log\NullLogger;
 use WigeDev\JasperCore\Event\EventHandler;
 use WigeDev\JasperCore\Event\EventHandlerCollection;
 use WigeDev\JasperCore\Exception\ServiceManagerNotFoundException;
+use WigeDev\JasperCore\Lifecycle\Request;
+use WigeDev\JasperCore\Lifecycle\Response;
+use WigeDev\JasperCore\Lifecycle\Router;
 use WigeDev\JasperCore\ServiceManager\ServiceManager;
 use WigeDev\JasperCore\ServiceManager\ServiceManagerManager;
 use WigeDev\JasperCore\Utility\Configuration;
 use WigeDev\JasperCore\Utility\ModuleControllerLoader;
-use WigeDev\JasperCore\Utility\Request;
-use WigeDev\JasperCore\Utility\Response;
-use WigeDev\JasperCore\Utility\Router;
 
 session_start();
 date_default_timezone_set('UTC');
@@ -355,10 +355,10 @@ class Core
  */
 function FW()
 {
-    // try {
-    //     return Core::i();
-    // } catch (Exception $exception) {
-    //     //Core::i()->log->critical('An uncaught exception has occurred: ' . $exception->getMessage());
-    //     exit();
-    // }
+    try {
+        return Core::i();
+    } catch (Exception $exception) {
+        Core::i()->log->critical('An uncaught exception has occurred: ' . $exception->getMessage());
+        exit();
+    }
 }

@@ -115,19 +115,30 @@ class Response
     }
 
     /**
-     * Set the variables that were submitted as part of the request
-     *
-     * @param array $variables The variables passed as part of the request
+     * Set the data to display to the user. This is generally a single dataset that will be rendered into a table or
+     * output as CSV or JSON.
+     * @param array $data The data to be output
      */
-    public function setVariables(array $variables): void
+    public function setData(array $data): void 
     {
-        $this->variables = $variables;
+        $this->data = $data;
+    }
+
+    /**
+     * Set a value to be used in the rendered output. This is typically a single value that will be put into an HTML
+     * view or a web page.
+     * @param string $key The name of the value
+     * @param mixed $value The value, may be a string or other object
+     */
+    public function setValue(string $key, $value): void 
+    {
+        $this->variables[$key] = $value;
     }
 
     /**
      * Get the variables that were set as part of the request
      *
-     * @return string[] The variables that were set as part of the request
+     * @return aray The values that have been set to include in the response
      */
     public function getVariables(): array
     {

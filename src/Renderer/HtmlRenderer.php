@@ -2,13 +2,14 @@
 namespace WigeDev\JasperCore\Renderer;
 
 use WigeDev\JasperCore\Core;
-use WigeDev\JasperCore\Utility\Response;
+use WigeDev\JasperCore\Lifecycle\Response;
 
 /**
  * Class HtmlRenderer
  *
  * Renders the response as an HTML document
  * TODO: Need to add the folder paths for rendering.
+ * TODO: Make this use twig
  *
  * @package WigeDev\JasperCore\Renderer
  */
@@ -18,7 +19,6 @@ class HtmlRenderer extends Renderer
     {
         parent::render($response);
         //$base = $this->getBaseURL(false);
-        /** @noinspection PhpUndefinedMethodInspection */
         //$response->getViewHelper('meta')->prepend('base', $base);
         extract($response->getVariables(), EXTR_SKIP);
         $page_content = '';
