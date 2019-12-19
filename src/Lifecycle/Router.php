@@ -50,23 +50,23 @@ class Router
             $response->setStatusCode(404);
             return;
         }
-        $request->resetMCAValues();
+        $response->resetMCAValues();
         if (isset($variables['module'])) {
-            $request->setModule($variables['module']);
+            $response->setModule($variables['module']);
             unset($variables['module']);
         }
         if (isset($variables['controller'])) {
-            $request->setController($variables['controller']);
+            $response->setController($variables['controller']);
             unset($variables['controller']);
         }
         if (isset($variables['action'])) {
-            $request->setAction($variables['action']);
+            $response->setAction($variables['action']);
             unset($variables['action']);
         }
-        // Store the variables for retrieval
-        if (count($variables) > 0) {
-            $response->setVariables($variables);
-        }
+        // Store the variables for retrieval TODO: Should this be done? Seems insecure.
+//        if (count($variables) > 0) {
+//            $response->setValues($variables);
+//        }
     }
 
     /**

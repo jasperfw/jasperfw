@@ -32,10 +32,18 @@ class Response
     protected $default_view_type;
     /** @var string The renderer type */
     protected $view_type;
+    /** @var string the Module the router has routed to */
+    protected $module;
+    /** @var string The Controller the router has routed to */
+    protected $controller;
+    /** @var string The Action the router has routed to */
+    protected $action;
     /** @var string The path to the layout file */
     protected $layout_path;
     /** @var string The path to the view file */
     protected $view_path;
+    /** @var string The filename of the view file */
+    protected $view_file;
     /** @var ViewHelper[] The view helpers */
     protected $view_helpers;
     protected $renderers;
@@ -45,6 +53,7 @@ class Response
      */
     public function __construct()
     {
+        $this->setLayoutPath(_ROOT_PATH_ . DS . 'layout'); // default layout folder, can be overrideen in the config
         $this->loadConfiguration();
     }
 
@@ -115,6 +124,77 @@ class Response
     }
 
     /**
+     * Set the module that was requested
+     *
+     * @param string $module
+     */
+    public function setModule(string $module): void
+    {
+        $this->module = $module;
+    }
+
+    /**
+     * Get the name of the module that was requested
+     *
+     * @return string
+     */
+    public function getModule(): string
+    {
+        return $this->module;
+    }
+
+    /**
+     * Set the controller that was requested
+     *
+     * @param string $controller
+     */
+    public function setController(string $controller): void
+    {
+        $this->controller = $controller;
+    }
+
+    /**
+     * Get the name of the controller that was requested
+     *
+     * @return string
+     */
+    public function getController(): string
+    {
+        return $this->controller;
+    }
+
+    /**
+     * Set the action that was requested
+     *
+     * @param string $action
+     */
+    public function setAction(string $action): void
+    {
+        $this->action = $action;
+    }
+
+    /**
+     * Get the name of the action that was requested
+     *
+     * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    /**
+     * Reset the Module Controller and Action values to "index" This is useful when rerouting or doing an internal
+     * redirect to ensure prior values are removed.
+     */
+    public function resetMCAValues()
+    {
+        $this->setModule('index');
+        $this->setController('index');
+        $this->setAction('index');
+    }
+
+    /**
      * Set the data to display to the user. This is generally a single dataset that will be rendered into a table or
      * output as CSV or JSON.
      * @param array $data The data to be output
@@ -122,6 +202,15 @@ class Response
     public function setData(array $data): void 
     {
         $this->data = $data;
+    }
+
+    /**
+     * Get the data array. This is the core piece of information that the page contains.
+     * @return array
+     */
+    public function getData(): array 
+    {
+        return $this->data;
     }
 
     /**
@@ -133,6 +222,15 @@ class Response
     public function setValue(string $key, $value): void 
     {
         $this->variables[$key] = $value;
+    }
+
+    /**
+     * Add multiple values at once. Any existing values with duplicate keys will be replaced with the new value.
+     * @param array $values The new values
+     */
+    public function setValues(array $values): void 
+    {
+        $this->variables = array_merge($this->variables, $values);
     }
 
     /**
@@ -251,4 +349,54 @@ class Response
             $this->view_type = $this->default_view_type;
         }
     }
+
+    public function getLayoutPath(): string 
+    {
+        return $this->layout_path;
+    }
+
+    /**
+     * Get the path to the view file. If no path has been set, uses the default path.
+     * @return string The path to the view file
+     */
+    public function getViewPath(): string 
+    {
+        if ($this->view_path === null) {
+            return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getController() . DS . $this->getAction() . 'View';
+        }
+        return $this->view_path;
+    }
+
+    /**
+     * The name of the view file to be used in rendering
+     * @param string $view_file The filename
+     */
+    public function setViewFile(string $view_file): void 
+    {
+        $this->view_file = $view_file;
+    }
+
+    /**
+     * Get the filename for the view. If none has been specified, returns the name of the action and '.twig'
+     * @return string The filename
+     */
+    public function getViewFile(): string 
+    {
+        if (null === $this->view_file) {
+            return $this->action . '.twig';
+        }
+        return $this->view_file;
+    }
+    
+    public function setLayoutPath(string $newPath): void 
+    {
+        $this->layout_path = $newPath;
+    }
+    
+    public function setViewPath(string $newPath): void 
+    {
+        $this->view_path = $newPath;
+    }
+    
+    
 }

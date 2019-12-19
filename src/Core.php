@@ -166,7 +166,6 @@ class Core
         }
         static::$framework->router = new Router();
         static::$framework->mcl = new ModuleControllerLoader();
-        static::$framework->response = new Response();
         return static::$framework;
     }
 
@@ -187,7 +186,6 @@ class Core
     {
         try {
             $this->fireEvent('parsingrequest');
-            $this->request = new Request();
             $this->fireEvent('requestparsed');
             $this->fireEvent('beforeroute');
             $this->router->route($this->request, $this->response);
@@ -196,7 +194,7 @@ class Core
             $this->mcl->load($this->response);
             $this->fireEvent('afterload');
             $this->fireEvent('beforerender');
-            //$this->response->render(); //TODO: Uncomment this
+            $this->response->render(); //TODO: Uncomment this
             $this->fireEvent('afterrender');
             $this->fireEvent('beginshutdown');
         } catch (Exception $exception) {
