@@ -33,6 +33,8 @@ class HtmlRenderer extends Renderer
         $twig = new Environment($twig_loader); //TODO: Add caching
         $twig_loader->addPath($response->getViewPath(), 'view');
         $twig_loader->addPath($response->getLayoutPath(), 'layout');
+        $output['layout__file'] = 'layout::' . $response->getLayoutFile();
+        // Render the document
         $twig->render($response->getViewFile(), $output);
 
 

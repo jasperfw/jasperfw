@@ -70,31 +70,33 @@ if (ENVIRONMENT === 'test' || ENVIRONMENT == 'cli') {
     ini_set('xdebug.var_display_max_data', 1024);
 }
 // Register a custom error handler
-set_error_handler(function ($errno, $errstr, $errfile = null, $errline = null) {
-    if (false === Core::isInitialized()) {
-        echo "<h1>Error 500</h1><p>Error $errno - $errstr in $errfile on $errline</p>";
+set_error_handler(
+    function ($errno, $errstr, $errfile = null, $errline = null) {
+        if (false === Core::isInitialized()) {
+            echo "<h1>Error 500</h1><p>Error $errno - $errstr in $errfile on $errline</p>";
+        }
+        // Process the error based on type
+        switch ($errno) {
+            case E_USER_ERROR:
+            case E_ERROR:
+                Core::i()->log->error("$errstr -  on line $errline in file $errfile");
+                break;
+            case E_USER_WARNING:
+            case E_WARNING:
+                Core::i()->log->warning("$errstr -  on line $errline in file $errfile");
+                break;
+            case E_RECOVERABLE_ERROR:
+            case E_USER_NOTICE:
+            case E_NOTICE:
+                Core::i()->log->notice("$errstr -  on line $errline in file $errfile");
+                break;
+            default:
+                echo "Unknown error type: [$errno] $errstr -  on line $errline in file $errfile<br />\n";
+                break;
+        }
+        return true; // Prevent the built in error handler from being called
     }
-    // Process the error based on type
-    switch ($errno) {
-        case E_USER_ERROR:
-        case E_ERROR:
-            Core::i()->log->error("$errstr -  on line $errline in file $errfile");
-            break;
-        case E_USER_WARNING:
-        case E_WARNING:
-            Core::i()->log->warning("$errstr -  on line $errline in file $errfile");
-            break;
-        case E_RECOVERABLE_ERROR:
-        case E_USER_NOTICE:
-        case E_NOTICE:
-            Core::i()->log->notice("$errstr -  on line $errline in file $errfile");
-            break;
-        default:
-            echo "Unknown error type: [$errno] $errstr -  on line $errline in file $errfile<br />\n";
-            break;
-    }
-    return true; // Prevent the built in error handler from being called
-});
+);
 
 /**
  * Class Core
@@ -104,7 +106,7 @@ set_error_handler(function ($errno, $errstr, $errfile = null, $errline = null) {
  * @package WigeDev\JasperCore
  *
  * @property string                 locale       The ISO locale string, typically set in the URI
- * @property int                    $http_status The status code for the http request.
+ * @property int                    http_status  The status code for the http request.
  * @property LoggerInterface        log          A reference to the log
  * @property Configuration          config       The configuration manager for the framework
  * @property Request                request      The container of information about the request
@@ -112,6 +114,7 @@ set_error_handler(function ($errno, $errstr, $errfile = null, $errline = null) {
  * @property string                 request_uri  The requested URI
  * @property Router                 router       The router class that handles the routing of incoming requests
  * @property ModuleControllerLoader mcl          The loader for module controllers
+ * @property ContainerInterface     c            The dependency injection container
  */
 class Core
 {
@@ -206,21 +209,6 @@ class Core
     }
 
     /**
-     * Set values in the framework.
-     *
-     * @param string $name  The name of the value being set
-     * @param mixed  $value The value to set
-     */
-    public function __set(string $name, $value): void
-    {
-        switch ($name) {
-            case 'locale':
-                $this->request->setLocale($value);
-                break;
-        }
-    }
-
-    /**
      * Get values or service managers from the framework.
      *
      * @param string $name The name of the value or service manager to return
@@ -255,6 +243,21 @@ class Core
                 }
         }
         return false;
+    }
+
+    /**
+     * Set values in the framework.
+     *
+     * @param string $name  The name of the value being set
+     * @param mixed  $value The value to set
+     */
+    public function __set(string $name, $value): void
+    {
+        switch ($name) {
+            case 'locale':
+                $this->request->setLocale($value);
+                break;
+        }
     }
 
     /**
