@@ -34,10 +34,10 @@ if (!defined('DS')) {
     /** Platform appropriate directory seperator, a shortcut for DIRECTORY_SEPARATOR */
     define('DS', DIRECTORY_SEPARATOR);
 };
-if (!defined('_SITE_PATH_') || !defined('_CONFIG_PATH_') || !defined('_ROOT_PATH_')) {
-    /** @noinspection PhpUnhandledExceptionInspection */
-    throw new Exception('One or more paths were not defined.');
-}
+//if (!defined('_SITE_PATH_') || !defined('_CONFIG_PATH_') || !defined('_ROOT_PATH_')) {
+//    /** @noinspection PhpUnhandledExceptionInspection */
+//    throw new Exception('One or more paths were not defined.');
+//}
 // This is here for debugging and unit testing reasons - SET IN index.php, NOT HERE!
 if (!defined('_ROOT_PATH_')) {
     /** The path to the root of the installation. */
@@ -45,11 +45,11 @@ if (!defined('_ROOT_PATH_')) {
 }
 if (!defined('_SITE_PATH_')) {
     /** The path to the site files (generally <root>/public) */
-    define('_SITE_PATH_', __DIR__ . DS . 'public');
+    define('_SITE_PATH_', '_ROOT_PATH_' . DS . 'public');
 }
 if (!defined('_CONFIG_PATH_')) {
     /** The path to the config folder or file (by default <root>/config/config.php) */
-    define('_CONFIG_PATH_', __DIR__ . DS . 'config');
+    define('_CONFIG_PATH_', '_ROOT_PATH_' . DS . 'config');
 }
 // Try to figure out the environment. If you are unit testing, the bootstrapper should set this to "test".
 if (!defined('ENVIRONMENT')) {
