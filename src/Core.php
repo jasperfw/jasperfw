@@ -33,7 +33,7 @@ if ('cli' == php_sapi_name()) {
 if (!defined('DS')) {
     /** Platform appropriate directory seperator, a shortcut for DIRECTORY_SEPARATOR */
     define('DS', DIRECTORY_SEPARATOR);
-}
+};
 //if (!defined('_SITE_PATH_') || !defined('_CONFIG_PATH_') || !defined('_ROOT_PATH_')) {
 //    /** @noinspection PhpUnhandledExceptionInspection */
 //    throw new Exception('One or more paths were not defined.');
@@ -124,6 +124,10 @@ class Core
     protected $response;
     /** @var Request Container for information about the request */
     protected $request;
+    /** @var Router The router that determines the module controller and action to call */
+    protected $router;
+    /** @var ModuleControllerLoader The loader for module controllers */
+    protected $mcl;
     /** @var ContainerInterface The dependency injection container */
     private $container;
     /** @var EventHandlerCollection */
@@ -159,6 +163,9 @@ class Core
      */
     public static function _init(): Core
     {
+        if (static::$framework !== null) {
+            return static::$framework;
+        }
         static::$framework = new Core();
         static::$framework->createDIContainer();
         try {
@@ -167,8 +174,9 @@ class Core
             echo('Unable to fire initialization.');
             exit();
         }
-        static::$framework->router = new Router();
-        static::$framework->mcl = new ModuleControllerLoader();
+        static::$framework->request = new Request();
+        static::$framework->response = new Response();
+        var_dump(static::$framework);
         return static::$framework;
     }
 
@@ -180,8 +188,8 @@ class Core
         $this->event_handlers = new EventHandlerCollection();
         $this->service_managers = new ServiceManagerManager();
         $this->config = new Configuration(_CONFIG_PATH_);
-        $this->request = new Request();
-        $this->response = new Response();
+        $this->router = new Router();
+        $this->mcl = new ModuleControllerLoader();
         //TODO: Get the log settings from config and set up logging.
     }
 

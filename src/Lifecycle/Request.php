@@ -2,8 +2,6 @@
 
 namespace WigeDev\JasperCore\Lifecycle;
 
-use WigeDev\JasperCore\Core;
-
 /**
  * Class Request
  *
@@ -55,7 +53,6 @@ class Request
         $this->determineRemoteIP();
         $this->uri_pieces = $this->processURI($this->uri);
         $this->path = implode('/', $this->uri_pieces);
-        Core::i()->log->debug('Resolved Path: ' . $this->path);
     }
 
     /**
