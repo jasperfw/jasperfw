@@ -176,7 +176,6 @@ class Core
         }
         static::$framework->request = new Request();
         static::$framework->response = new Response();
-        var_dump(static::$framework);
         return static::$framework;
     }
 
