@@ -3,7 +3,7 @@ namespace WigeDev\JasperCore\Renderer;
 
 
 use WigeDev\JasperCore\Core;
-use WigeDev\JasperCore\Utility\Response;
+use WigeDev\JasperCore\Lifecycle\Response;
 
 class CLIRenderer extends Renderer
 {
@@ -14,6 +14,6 @@ class CLIRenderer extends Renderer
         echo "Messages\n";
         var_dump($response->getMessages());
         echo "Debug\n";
-        var_dump(Core::i()->log->getEvents());
+        var_dump(Core::i()->log);
     }
 }

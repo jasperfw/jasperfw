@@ -236,7 +236,7 @@ class Response
     /**
      * Get the variables that were set as part of the request
      *
-     * @return aray The values that have been set to include in the response
+     * @return array The values that have been set to include in the response
      */
     public function getVariables(): array
     {

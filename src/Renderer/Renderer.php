@@ -100,7 +100,7 @@ abstract class Renderer
      */
     public function createLink($path, $include_locale = false)
     {
-        $protocol = (Core::i()->isSecure()) ? 'https:' : 'http:';
+        $protocol = (Core::i()->request->isSecure()) ? 'https:' : 'http:';
         $base = $this->getBaseURL($include_locale);
         return $protocol . $base . $path;
     }

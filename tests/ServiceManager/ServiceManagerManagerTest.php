@@ -14,7 +14,7 @@ use WigeDev\JasperCore\ServiceManager\ServiceManagerManager;
 
 class ServiceManagerManagerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         //TODO: This
     }

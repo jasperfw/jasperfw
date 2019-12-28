@@ -3,6 +3,7 @@ namespace WigeDev\JasperCore\Utility;
 
 use Exception;
 use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Lifecycle\Response;
 
 /**
  * Class ModuleControllerLoader

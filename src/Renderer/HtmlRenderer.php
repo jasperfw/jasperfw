@@ -2,9 +2,10 @@
 namespace WigeDev\JasperCore\Renderer;
 
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Loader\FilesystemLoader;
-use Twig\TwigFunction;
-use WigeDev\JasperCore\Core;
 use WigeDev\JasperCore\Lifecycle\Response;
 
 /**
@@ -18,6 +19,13 @@ use WigeDev\JasperCore\Lifecycle\Response;
  */
 class HtmlRenderer extends Renderer
 {
+    /**
+     * @param Response $response
+     *
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function render(Response $response): void
     {
         parent::render($response);

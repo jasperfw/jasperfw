@@ -1,9 +1,7 @@
 <?php
 namespace WigeDev\JasperCore\Renderer;
 
-
-use WigeDev\JasperCore\Core;
-use WigeDev\JasperCore\Utility\Response;
+use WigeDev\JasperCore\Lifecycle\Response;
 
 class JsonRenderer extends Renderer
 {
@@ -20,7 +18,8 @@ class JsonRenderer extends Renderer
         $variables['messages'] = $response->getMessages();
         // For the dev environment, add the debug information to the variables array
         if ($_SESSION['debug'] === true) {
-            $variables['debug'] = Core::i()->log->getEventArray();
+            // TODO: Output log
+            //$variables['debug'] = Core::i()->log->getEventArray();
         }
         $page_content = json_encode($variables, JSON_UNESCAPED_UNICODE);
         echo $page_content;
