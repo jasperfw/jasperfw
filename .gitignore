@@ -31,3 +31,4 @@ fabric.properties
 composer.lock
 /vendor/
 /reference/
+/.phpunit.result.cache

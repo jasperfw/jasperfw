@@ -342,19 +342,21 @@ class Core
 
     /**
      * Set up the dependency injection container for the application
+     * @throws Exception if the container can not be built.
+     * TODO: Creating a DI container should be done in the index file of the site between init and run
      */
     protected function createDIContainer()
     {
-        //$builder = new \DI\ContainerBuilder();
-        //// Enable caching for production environment - this extension is deprecated.
-        ////if ('production' === ENVIRONMENT) {
-        ////    $builder->setDefinitionCache(new Doctrine\Common\Cache\ApcCache());
-        ////}
-        //if (!empty($this->config->parseConfigurationKeepLast('dependencies'))) {
-        //    $builder->useAnnotations(true);
-        //    $builder->addDefinitions($this->config->parseConfigurationKeepLast('dependencies'));
+        $builder = new \DI\ContainerBuilder();
+        // Enable caching for production environment - this extension is deprecated.
+        //if ('production' === ENVIRONMENT) {
+        //    $builder->setDefinitionCache(new Doctrine\Common\Cache\ApcCache());
         //}
-        //$this->container = $builder->build();
+        if (!empty($this->config->parseConfigurationKeepLast('dependencies'))) {
+            $builder->useAnnotations(true);
+            $builder->addDefinitions($this->config->parseConfigurationKeepLast('dependencies'));
+        }
+        $this->container = $builder->build();
     }
 }
 
