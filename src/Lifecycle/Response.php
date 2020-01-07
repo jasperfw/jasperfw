@@ -2,6 +2,7 @@
 namespace WigeDev\JasperCore\Lifecycle;
 
 use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Exception\RenderingException;
 use WigeDev\JasperCore\Renderer\Renderer;
 use WigeDev\JasperCore\Renderer\ViewHelper\ViewHelper;
 use WigeDev\JasperCore\Utility\HTTPUtilities;
@@ -46,7 +47,10 @@ class Response
     protected $view_file;
     /** @var ViewHelper[] The view helpers */
     protected $view_helpers;
+    /** @var array List of renderers and their settings */
     protected $renderers;
+    /** @var array Mapping of file extensions to renderer names. * is default */
+    protected $extension_map;
 
     /**
      * Response constructor.
@@ -104,24 +108,24 @@ class Response
         return $this->status_code;
     }
 
-    public function registerViewHelper(string $name, ViewHelper $viewHelper)
-    {
-        $viewHelper->registerResponse($this);
-        $this->view_helpers[$name] = $viewHelper;
-    }
+//    public function registerViewHelper(string $name, ViewHelper $viewHelper)
+//    {
+//        $viewHelper->registerResponse($this);
+//        $this->view_helpers[$name] = $viewHelper;
+//    }
 
-    public function getViewHelpers(): array
-    {
-        return $this->view_helpers;
-    }
+//    public function getViewHelpers(): array
+//    {
+//        return $this->view_helpers;
+//    }
 
-    public function getViewHelper(string $name): ?ViewHelper
-    {
-        if (isset($this->view_helpers[$name])) {
-            return $this->view_helpers[$name];
-        }
-        return null;
-    }
+//    public function getViewHelper(string $name): ?ViewHelper
+//    {
+//        if (isset($this->view_helpers[$name])) {
+//            return $this->view_helpers[$name];
+//        }
+//        return null;
+//    }
 
     /**
      * Set the module that was requested
@@ -184,6 +188,45 @@ class Response
     }
 
     /**
+     * Set the view type. The renderer that is used to display output will be determined based on this value. This is
+     * typically set by the router based on the file extension, then the module or controller can update it based on
+     * allowed types.
+     *
+     * @param string $viewType The view type
+     */
+    public function setViewType(string $viewType): void
+    {
+        $this->view_type = $viewType;
+    }
+
+    /**
+     * Gets the view type. The renderer is based on the final view type set when render() is called.
+     * @return string The view type
+     */
+    public function getViewType(): string
+    {
+        return $this->view_type;
+    }
+
+    public function getRenderer(): Renderer
+    {
+        if (isset($this->extension_map[$this->view_type])) {
+            $renderClass = $this->renderers[$this->extension_map[$this->view_type]]['handler'];
+        } elseif (isset($this->extension_map['*'])) {
+            $renderClass = $this->renderers[$this->extension_map['*']]['handler'];
+        } elseif (isset($this->extension_map[$this->default_view_type])) {
+            $renderClass = $this->renderers[$this->extension_map[$this->default_view_type]]['handler'];
+        } else {
+            throw new RenderingException('No renderer found for ' . $this->view_type . ' files');
+        }
+        try {
+            return new $renderClass();
+        } catch (\Exception $e) {
+            throw new RenderingException('Unable to instantiate Renderer ' . $renderClass);
+        }
+    }
+
+    /**
      * Reset the Module Controller and Action values to "index" This is useful when rerouting or doing an internal
      * redirect to ensure prior values are removed.
      */
@@ -192,25 +235,7 @@ class Response
         $this->setModule('index');
         $this->setController('index');
         $this->setAction('index');
-    }
-
-    /**
-     * Set the data to display to the user. This is generally a single dataset that will be rendered into a table or
-     * output as CSV or JSON.
-     * @param array $data The data to be output
-     */
-    public function setData(array $data): void 
-    {
-        $this->data = $data;
-    }
-
-    /**
-     * Get the data array. This is the core piece of information that the page contains.
-     * @return array
-     */
-    public function getData(): array 
-    {
-        return $this->data;
+        $this->setViewType('');
     }
 
     /**
@@ -219,18 +244,27 @@ class Response
      * @param string $key The name of the value
      * @param mixed $value The value, may be a string or other object
      */
-    public function setValue(string $key, $value): void 
+    public function setValue(string $key, $value): void
     {
-        $this->variables[$key] = $value;
+        $this->values[$key] = $value;
     }
 
     /**
      * Add multiple values at once. Any existing values with duplicate keys will be replaced with the new value.
+     *
      * @param array $values The new values
      */
-    public function setValues(array $values): void 
+    public function setValues(array $values): void
     {
-        $this->variables = array_merge($this->variables, $values);
+        $this->values = array_merge($this->values, $values);
+    }
+
+    /**
+     * Get the values to include into the rendered output
+     */
+    public function getValues(): array
+    {
+        return $this->values;
     }
 
     /**
@@ -265,13 +299,14 @@ class Response
 
     public function render()
     {
-        $this->renderer->render($this);
+        $renderer = $this->getRenderer();
+        $renderer->render($this);
     }
 
-    private function loadConfiguration()
+    protected function loadConfiguration()
     {
         $config = Core::i()->config->getConfiguration('view');
-        $config = $this->parseConfiguration($config);
+        //$config = $this->parseConfiguration($config);
         foreach ($config as $key => $configuration) {
             if ($key === 'renderers') {
                 $this->renderers = $configuration;
@@ -279,7 +314,20 @@ class Response
                 $this->__set($key, $configuration);
             }
         }
-        $this->determineViewType();
+        $this->generateExtensionMap();
+    }
+
+    /**
+     * Iterate through the extensions for each renderer and build a list of extensions and their related renderer.
+     */
+    protected function generateExtensionMap(): void
+    {
+        $this->extension_map = [];
+        foreach ($this->renderers as $name => $renderer) {
+            foreach ($renderer['extensions'] as $extension) {
+                $this->extension_map[$extension] = $name;
+            }
+        }
     }
 
     /**
@@ -290,7 +338,7 @@ class Response
      *
      * @return array The parsed configuration
      */
-    private function parseConfiguration($configuration)
+    protected function parseConfiguration($configuration)
     {
         $return = [];
         foreach ($configuration as $page) {
@@ -298,7 +346,7 @@ class Response
                 if ($key == 'helpers') {
                     foreach ($setting as $a => $b) {
                         if (!isset($return['renderers'])) {
-                            $return['renderers'] = array();
+                            $return['renderers'] = [];
                         }
                         if (!isset($return['renderers'][$a])) {
                             $return['renderers'][$a] = array();
@@ -333,36 +381,29 @@ class Response
         Core::i()->log->debug('View Type: ' . $this->view_type);
     }
 
-    /**
-     * Determines based on the passed extension the proper file type
-     *
-     * @param $extension
-     */
-    protected function setViewType($extension)
-    {
-        foreach ($this->renderers as $type => $config) {
-            if (in_array($extension, $config['extensions'])) {
-                $this->view_type = $type;
-            }
-        }
-        if (!isset($this->view_type)) {
-            $this->view_type = $this->default_view_type;
-        }
-    }
-
-    public function getLayoutPath(): string 
+    public function getLayoutPath(): string
     {
         return $this->layout_path;
+    }
+
+    public function getLayoutFile(): string
+    {
+        if (isset($this->layout_file)) {
+            return $this->layout_file;
+        } else {
+            return '_default.twig';
+        }
     }
 
     /**
      * Get the path to the view file. If no path has been set, uses the default path.
      * @return string The path to the view file
      */
-    public function getViewPath(): string 
+    public function getViewPath(): string
     {
         if ($this->view_path === null) {
-            return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getController() . DS . $this->getAction() . 'View';
+            return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getModule(
+                ) . DS . 'View' . DS . $this->getController();
         }
         return $this->view_path;
     }

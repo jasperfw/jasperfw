@@ -5,8 +5,6 @@ namespace WigeDev\JasperCore\Renderer;
 use Exception;
 use WigeDev\JasperCore\Core;
 use WigeDev\JasperCore\Lifecycle\Response;
-use WigeDev\JasperCore\Renderer\ViewHelper\ViewHelperCollection;
-use WigeDev\JasperCore\Renderer\ViewHelper\ViewHelperInterface;
 
 /**
  * Class Renderer
@@ -24,18 +22,18 @@ abstract class Renderer
      */
     public function render(Response $response): void
     {
-        foreach ($response->getViewHelpers() as $name => $view_helper) {
-            if (is_a($view_helper, ViewHelperInterface::class)) {
-                /** @var $view_helper ViewHelperInterface */
-                if (null !== $view_helper->getParent() && !is_null($response->getViewHelper($view_helper->getParent()))) {
-                    $parent = $response->getViewHelper($view_helper->getParent());
-                    if (is_a($parent, ViewHelperCollection::class)) {
-                        /** @var $parent ViewHelperCollection */
-                        $parent->append($name, $view_helper);
-                    }
-                }
-            }
-        }
+//        foreach ($response->getViewHelpers() as $name => $view_helper) {
+//            if (is_a($view_helper, ViewHelperInterface::class)) {
+//                /** @var $view_helper ViewHelperInterface */
+//                if (null !== $view_helper->getParent() && !is_null($response->getViewHelper($view_helper->getParent()))) {
+//                    $parent = $response->getViewHelper($view_helper->getParent());
+//                    if (is_a($parent, ViewHelperCollection::class)) {
+//                        /** @var $parent ViewHelperCollection */
+//                        $parent->append($name, $view_helper);
+//                    }
+//                }
+//            }
+//        }
     }
 
     /**
@@ -48,7 +46,7 @@ abstract class Renderer
      * @return mixed|string
      * @throws Exception
      */
-    public function createURL($route_name, $variables = [])
+    public function generateURL($route_name, $variables = [])
     {
         // Make sure the route configuration has been loaded
         if (!isset($this->routes)) {
@@ -73,9 +71,7 @@ abstract class Renderer
             }
         }
         // If there is a trailing '/index' remove it. There can be up to three (module, controller, action)
-        $url = rtrim($url, '/index');
-        $url = rtrim($url, '/index');
-        $url = rtrim($url, '/index');
+        $url = preg_replace('|(/index){1,3}$|', '', $url);
         // Add the query string
         if (count($query_string) > 0) {
             $url .= '?' . implode('&', $query_string);
@@ -85,7 +81,8 @@ abstract class Renderer
         if (Core::i()->locale_set) {
             $url = $this->getLinkLocale(Core::i()->locale) . '/' . $url;
         }
-        return $url;
+        // TODO: Add base URL
+        return '/' . $url;
     }
 
     /**

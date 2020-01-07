@@ -49,7 +49,7 @@ if (!defined('_SITE_PATH_')) {
 }
 if (!defined('_CONFIG_PATH_')) {
     /** The path to the config folder or file (by default <root>/config/config.php) */
-    define('_CONFIG_PATH_', '_ROOT_PATH_' . DS . 'config');
+    define('_CONFIG_PATH_', _ROOT_PATH_ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php');
 }
 // Try to figure out the environment. If you are unit testing, the bootstrapper should set this to "test".
 if (!defined('ENVIRONMENT')) {
@@ -167,7 +167,6 @@ class Core
             return static::$framework;
         }
         static::$framework = new Core();
-        static::$framework->createDIContainer();
         try {
             static::$framework->fireEvent('initialized');
         } catch (Exception $e) {
@@ -210,7 +209,9 @@ class Core
         } catch (Exception $exception) {
             // If an uncaught exception gets here, there isn't much we can really do but log it and show a basic error
             //FUTURE: Make this more robust and maybe even customizeable
+            var_dump($exception);
             echo 'Error 500 - An unexpected error has occurred.';
+            var_dump($exception);
             $this->log->critical('An uncaught exception occurred. ' . $exception->getMessage());
         }
     }
@@ -342,21 +343,20 @@ class Core
 
     /**
      * Set up the dependency injection container for the application
-     * @throws Exception if the container can not be built.
-     * TODO: Creating a DI container should be done in the index file of the site between init and run
      */
-    protected function createDIContainer()
+    public function setDIContainer(ContainerInterface $container): void
     {
-        $builder = new \DI\ContainerBuilder();
-        // Enable caching for production environment - this extension is deprecated.
-        //if ('production' === ENVIRONMENT) {
-        //    $builder->setDefinitionCache(new Doctrine\Common\Cache\ApcCache());
-        //}
-        if (!empty($this->config->parseConfigurationKeepLast('dependencies'))) {
-            $builder->useAnnotations(true);
-            $builder->addDefinitions($this->config->parseConfigurationKeepLast('dependencies'));
-        }
-        $this->container = $builder->build();
+        $this->container = $container;
+    }
+
+    /**
+     * Set a logger to record system messages during execution
+     *
+     * @param LoggerInterface $logger The log object that messages will be sent to
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->log = $logger;
     }
 }
 

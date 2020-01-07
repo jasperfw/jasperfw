@@ -63,6 +63,7 @@ class Router
             $response->setAction($variables['action']);
             unset($variables['action']);
         }
+        $response->setViewType($request->getExtension());
         // Store the variables for retrieval TODO: Should this be done? Seems insecure.
 //        if (count($variables) > 0) {
 //            $response->setValues($variables);

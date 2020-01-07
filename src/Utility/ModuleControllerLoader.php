@@ -42,13 +42,17 @@ class ModuleControllerLoader
      */
     protected function checkModule() : void
     {
-        $namespaced_class = $this->getFullyQualifiedClass($this->response->getModule(), $this->response->getController());
+        $namespaced_class = $this->getFullyQualifiedClass(
+            $this->response->getModule(),
+            $this->response->getController()
+        );
         if (!class_exists($namespaced_class)) {
             $this->response->setStatusCode(404);
             Core::i()->log->warning('Unable to load controller ' . $namespaced_class);
             return;
         }
-        if (!call_user_func($namespaced_class . '::can_view')) {
+        if (!call_user_func($namespaced_class . '::canView')) {
+            var_dump($namespaced_class);
             $this->response->setStatusCode(403);
             Core::i()->log->error('User is not authorized to view ' . $namespaced_class);
             return;
@@ -56,7 +60,9 @@ class ModuleControllerLoader
         if (method_exists($namespaced_class, $this->getActionMethodName($this->response->getAction()))) {
             $this->response->setStatusCode(200);
         } elseif (method_exists($namespaced_class, 'indexAction')) {
-            Core::i()->log->notice('Requested action ' . $this->response->getAction() . ' not found in ' . $namespaced_class);
+            Core::i()->log->notice(
+                'Requested action ' . $this->response->getAction() . ' not found in ' . $namespaced_class
+            );
             $this->response->setAction('index');
             $this->response->setStatusCode(200);
         } else {
