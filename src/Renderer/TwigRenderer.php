@@ -30,10 +30,10 @@ class TwigRenderer extends Renderer
         parent::render($response);
         // Assemble the data to be displayed
         $output = $response->getValues();
+        $output['data'] = $response->getData();
         //$base = $this->getBaseURL(false);
         //$response->getViewHelper('meta')->prepend('base', $base);
         //extract($response->getVariables(), EXTR_SKIP);
-        $page_content = '';
         // Set up Twig
         $twig_loader = new FilesystemLoader();
         $twig = new Environment($twig_loader); //TODO: Add caching

@@ -24,11 +24,13 @@ class Response
     /** @var bool True if the request has been routed. This does not indicate the success or failure of the routing. */
     protected $is_routed = false;
     /** @var array The variables passed as part of the request */
-    protected $variables = array();
+    protected $variables = [];
     /** @var string[] Error messages and other output strings */
-    protected $messages = array();
+    protected $messages = [];
     /** @var array The values that may be embedded into the rendered view returned to the client */
-    protected $values = array();
+    protected $values = [];
+    /** @var mixed The data payload of the response - typically an array */
+    protected $data;
     /** @var string The default renderer type */
     protected $default_view_type;
     /** @var string The renderer type */
@@ -265,6 +267,26 @@ class Response
     public function getValues(): array
     {
         return $this->values;
+    }
+
+    /**
+     * Set the data payload of the response. Typically this is an array. Responses that are informational web pages may
+     * not have any data set at all.
+     *
+     * @param mixed $data The core data of the response.
+     */
+    public function setData($data): void
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * Returns the core data payload of the response.
+     * @return mixed The data for the response
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     /**
