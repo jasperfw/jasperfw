@@ -3,10 +3,10 @@ namespace WigeDev\JasperCoreTests\Utility;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use PHPUnit\Framework\TestCase;
 use WigeDev\JasperCore\Utility\Configuration;
+use WigeDev\JasperCoreTests\FrameworkTestCase;
 
-class ConfigurationTest extends TestCase
+class ConfigurationTest extends FrameworkTestCase
 {
     /**
      * @var vfsStreamDirectory The virtual file system containing the config file to test
@@ -110,13 +110,9 @@ use WigeDev\JasperCore\Renderer\JsonRenderer;
 use WigeDev\JasperCore\Renderer\ViewHelper\MetaHelper;
 use WigeDev\JasperCore\Renderer\ViewHelper\StylesheetHelper;
 use WigeDev\JasperCore\Renderer\ViewHelper\TitleHelper;
-use WigeDev\JasperCore\ServiceManager\ViewManager;
 
 return array(
     'core' => array(),
-    'service_managers' => array(
-        'view' => new ViewManager(),
-    ),
     // Views control how different types of requests are displayed to the user. This lets a request for an html page, a
     // csv file and a json file all be handled by the same controller and action, and simply create the file in
     // different ways.

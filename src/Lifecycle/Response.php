@@ -1,6 +1,7 @@
 <?php
 namespace WigeDev\JasperCore\Lifecycle;
 
+use Exception;
 use WigeDev\JasperCore\Core;
 use WigeDev\JasperCore\Exception\RenderingException;
 use WigeDev\JasperCore\Renderer\Renderer;
@@ -210,6 +211,11 @@ class Response
         return $this->view_type;
     }
 
+    /**
+     * Get the renderer based on the request file extension
+     * @return Renderer
+     * @throws RenderingException
+     */
     public function getRenderer(): Renderer
     {
         if (isset($this->extension_map[$this->view_type])) {
@@ -223,7 +229,7 @@ class Response
         }
         try {
             return new $renderClass();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new RenderingException('Unable to instantiate Renderer ' . $renderClass);
         }
     }
@@ -319,6 +325,10 @@ class Response
         return $this->messages;
     }
 
+    /**
+     * Perform the rendering operation.
+     * @throws RenderingException
+     */
     public function render()
     {
         $renderer = $this->getRenderer();
@@ -424,8 +434,7 @@ class Response
     public function getViewPath(): string
     {
         if ($this->view_path === null) {
-            return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getModule(
-                ) . DS . 'View' . DS . $this->getController();
+            return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getModule() . DS . 'View' . DS . $this->getController();
         }
         return $this->view_path;
     }
@@ -434,7 +443,7 @@ class Response
      * The name of the view file to be used in rendering
      * @param string $view_file The filename
      */
-    public function setViewFile(string $view_file): void 
+    public function setViewFile(string $view_file): void
     {
         $this->view_file = $view_file;
     }
@@ -443,23 +452,22 @@ class Response
      * Get the filename for the view. If none has been specified, returns the name of the action and '.twig'
      * @return string The filename
      */
-    public function getViewFile(): string 
+    public function getViewFile(): string
     {
         if (null === $this->view_file) {
             return $this->action . '.twig';
         }
         return $this->view_file;
     }
-    
-    public function setLayoutPath(string $newPath): void 
+
+    public function setLayoutPath(string $newPath): void
     {
         $this->layout_path = $newPath;
     }
-    
-    public function setViewPath(string $newPath): void 
+
+    public function setViewPath(string $newPath): void
     {
         $this->view_path = $newPath;
     }
-    
-    
+
 }

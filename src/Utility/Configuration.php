@@ -3,6 +3,8 @@ namespace WigeDev\JasperCore\Utility;
 
 use WigeDev\JasperCore\Core;
 
+use function WigeDev\JasperCore\FW;
+
 /**
  * Class Configuration
  *
@@ -61,13 +63,13 @@ class Configuration
             $array = include($path);
         } else {
             if (isset(Core::i()->log)) {
-                Core::i()->log->debug('Config path ' . $path . ' could not be read.');
+                FW()->log->debug('Config path ' . $path . ' could not be read.');
             }
             return false;
         }
         if (!is_array($array)) {
             if (isset(Core::i()->log)) {
-                Core::i()->log->debug('Config file ' . $path . ' is not an array.');
+                FW()->log->debug('Config file ' . $path . ' is not an array.');
             }
             return false;
         }

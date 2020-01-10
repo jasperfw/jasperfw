@@ -4,6 +4,7 @@ namespace WigeDev\JasperCoreTests;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use WigeDev\JasperCore\Core;
 
 /**
@@ -25,6 +26,7 @@ class FrameworkTestCase extends TestCase
         //Get a copy of the testcase to use in the callback
         $testcase = $this;
         parent::setUp();
+        //TODO: Set up mock logging
         $this->mockCore = $this->getMockBuilder(Core::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['__get'])
@@ -46,5 +48,11 @@ class FrameworkTestCase extends TestCase
      */
     public function mockGet(string $argument)
     {
+        switch ($argument) {
+            case 'log':
+                return new NullLogger();
+            default:
+                return null;
+        }
     }
 }

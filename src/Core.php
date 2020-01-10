@@ -7,12 +7,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WigeDev\JasperCore\Event\EventHandler;
 use WigeDev\JasperCore\Event\EventHandlerCollection;
-use WigeDev\JasperCore\Exception\ServiceManagerNotFoundException;
 use WigeDev\JasperCore\Lifecycle\Request;
 use WigeDev\JasperCore\Lifecycle\Response;
 use WigeDev\JasperCore\Lifecycle\Router;
-use WigeDev\JasperCore\ServiceManager\ServiceManager;
-use WigeDev\JasperCore\ServiceManager\ServiceManagerManager;
 use WigeDev\JasperCore\Utility\Configuration;
 use WigeDev\JasperCore\Utility\ModuleControllerLoader;
 
@@ -38,6 +35,10 @@ class Core
 {
     /** @var Core The framework object - I know, singleton, evil, bad. */
     private static $framework = null;
+    /** @var ContainerInterface The dependency injection container */
+    protected static $container;
+    /** @var LoggerInterface Reference to the log utility */
+    protected static $logger;
     /** @var Response The response object stores information about the response, from routing to views */
     protected $response;
     /** @var Request Container for information about the request */
@@ -46,12 +47,8 @@ class Core
     protected $router;
     /** @var ModuleControllerLoader The loader for module controllers */
     protected $mcl;
-    /** @var ContainerInterface The dependency injection container */
-    private $container;
     /** @var EventHandlerCollection */
     private $event_handlers;
-    /** @var ServiceManagerManager The service managers that run critical services */
-    private $service_managers;
     /** @var Configuration The configuration manager */
     private $config;
     private $output_type;
@@ -82,6 +79,26 @@ class Core
     public static function overrideFramework(Core $core): void
     {
         static::$framework = $core;
+    }
+
+    /**
+     * Set up the dependency injection container for the application
+     *
+     * @param ContainerInterface $container
+     */
+    public static function setDIContainer(ContainerInterface $container): void
+    {
+        static::$container = $container;
+    }
+
+    /**
+     * Set a logger to record system messages during execution
+     *
+     * @param LoggerInterface $logger The log object that messages will be sent to
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        static::$logger = $logger;
     }
 
     /**
@@ -119,7 +136,6 @@ class Core
     public function __construct()
     {
         $this->event_handlers = new EventHandlerCollection();
-        $this->service_managers = new ServiceManagerManager();
         $this->config = new Configuration(_CONFIG_PATH_);
         $this->router = new Router();
         $this->mcl = new ModuleControllerLoader();
@@ -138,7 +154,7 @@ class Core
             $this->mcl->load($this->response);
             $this->fireEvent('afterload');
             $this->fireEvent('beforerender');
-            $this->response->render(); //TODO: Uncomment this
+            $this->response->render();
             $this->fireEvent('afterrender');
             $this->fireEvent('beginshutdown');
         } catch (Exception $exception) {
@@ -157,7 +173,6 @@ class Core
      * @param string $name The name of the value or service manager to return
      *
      * @return mixed The requested value, or false if it could not be found.
-     * @throws ServiceManagerNotFoundException
      */
     public function __get(string $name)
     {
@@ -167,13 +182,12 @@ class Core
             case 'output_type':
                 return $this->output_type;
             case 'c':
-                return $this->container;
+                return static::$container;
             case 'log':
-                if ($this->service_managers->exists('log')) {
-                    return $this->service_managers->get('log');
-                } else {
-                    return new NullLogger();
+                if (!isset(static::$logger)) {
+                    static::$logger = new NullLogger();
                 }
+                return static::$logger;
             case 'request':
                 return $this->request;
             case 'response':
@@ -181,11 +195,8 @@ class Core
             case 'router':
                 return $this->router;
             default:
-                if ($this->service_managers->exists($name)) {
-                    return $this->service_managers->get($name);
-                }
+                return null;
         }
-        return false;
     }
 
     /**
@@ -201,20 +212,6 @@ class Core
                 $this->request->setLocale($value);
                 break;
         }
-    }
-
-    /**
-     * Register a service manager.
-     *
-     * @param string         $name The name of the service manager for use in retrieving a reference to it
-     * @param ServiceManager $service_manager
-     *
-     * @return Core
-     */
-    public function registerServiceManager(string $name, ServiceManager $service_manager): Core
-    {
-        $this->service_managers->register($name, $service_manager);
-        return $this;
     }
 
     /**
@@ -274,24 +271,6 @@ class Core
     public function getEnvironment(): string
     {
         return ENVIRONMENT;
-    }
-
-    /**
-     * Set up the dependency injection container for the application
-     */
-    public function setDIContainer(ContainerInterface $container): void
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * Set a logger to record system messages during execution
-     *
-     * @param LoggerInterface $logger The log object that messages will be sent to
-     */
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->log = $logger;
     }
 }
 

@@ -22,7 +22,7 @@ if ('cli' == php_sapi_name()) {
 if (!defined('DS')) {
     /** Platform appropriate directory seperator, a shortcut for DIRECTORY_SEPARATOR */
     define('DS', DIRECTORY_SEPARATOR);
-};
+}
 //if (!defined('_SITE_PATH_') || !defined('_CONFIG_PATH_') || !defined('_ROOT_PATH_')) {
 //    /** @noinspection PhpUnhandledExceptionInspection */
 //    throw new Exception('One or more paths were not defined.');
