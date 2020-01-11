@@ -96,9 +96,17 @@ class Core
      *
      * @param LoggerInterface $logger The log object that messages will be sent to
      */
-    public function setLogger(LoggerInterface $logger): void
+    public static function setLogger(LoggerInterface $logger): void
     {
         static::$logger = $logger;
+    }
+
+    /**
+     * Set up the environment variables
+     */
+    public static function bootstrap(): void
+    {
+        require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
     }
 
     /**
@@ -113,13 +121,14 @@ class Core
             return static::$framework;
         }
         // Use the bootstrapper to set up the environment
-        require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
+        static::bootstrap();
         // Initialize the framework
         static::$framework = new Core();
         // Start the event handler
         try {
             static::$framework->fireEvent('initialized');
         } catch (Exception $e) {
+            var_dump($e);
             echo('Unable to fire initialization.');
             exit();
         }
@@ -159,10 +168,8 @@ class Core
             $this->fireEvent('beginshutdown');
         } catch (Exception $exception) {
             // If an uncaught exception gets here, there isn't much we can really do but log it and show a basic error
-            //FUTURE: Make this more robust and maybe even customizeable
-            var_dump($exception);
+            //TODO: Add an error handler
             echo 'Error 500 - An unexpected error has occurred.';
-            var_dump($exception);
             $this->log->critical('An uncaught exception occurred. ' . $exception->getMessage());
         }
     }

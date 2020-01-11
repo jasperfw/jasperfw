@@ -5,6 +5,7 @@ use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use Twig\Extension\StringLoaderExtension;
 use Twig\Loader\FilesystemLoader;
 use WigeDev\JasperCore\Lifecycle\Response;
 
@@ -38,6 +39,7 @@ class TwigRenderer extends Renderer
         $twig_loader = new FilesystemLoader();
         $twig = new Environment($twig_loader); //TODO: Add caching
         $twig->addGlobal('renderer', $this);
+        $twig->addExtension(new StringLoaderExtension());
         $twig_loader->addPath($response->getViewPath());
         $twig_loader->addPath($response->getLayoutPath()); //TODO: Add namespacing
         $output['layout__file'] = $response->getLayoutFile();

@@ -51,7 +51,7 @@ class Request
         $this->query = $_GET;
         $this->post = $_POST;
         $this->determineRemoteIP();
-        $this->uri_pieces = $this->processURI($this->uri);
+        $this->processURI($this->uri);
         $this->path = implode('/', $this->uri_pieces);
     }
 
@@ -204,15 +204,17 @@ class Request
      *
      * @return array The pieces of the array
      */
-    protected function processURI(string $url): array
+    protected function processURI(string $url): void
     {
+        // Remove query string if it is set
+        $url = explode('?', $url)[0];
         $url = trim($url, '/');
         $url_array = explode('/', $url);
         $this->extractLocale($url_array);
         $filename = array_pop($url_array);
         $this->extension = pathinfo($filename, PATHINFO_EXTENSION);
         $url_array[] = $this->filename = pathinfo($filename, PATHINFO_FILENAME);
-        return $url_array;
+        $this->uri_pieces = $url_array;
     }
 
     /**
