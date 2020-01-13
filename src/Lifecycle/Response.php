@@ -423,7 +423,7 @@ class Response
         if (isset($this->layout_file)) {
             return $this->layout_file;
         } else {
-            return '_default.twig';
+            return '_default';
         }
     }
 
@@ -455,7 +455,7 @@ class Response
     public function getViewFile(): string
     {
         if (null === $this->view_file) {
-            return $this->action . '.twig';
+            return $this->action;
         }
         return $this->view_file;
     }

@@ -30,9 +30,9 @@ class HtmlRenderer extends Renderer
         parent::render($response);
         // Include the view
         Core::i()->log->debug('Trying to load view ' . $response->getViewPath() . $response->getViewFile());
-        if (file_exists($response->getViewPath() . $response->getViewFile())) {
+        if (file_exists($response->getViewPath() . DS . $response->getViewFile() . '.phtml')) {
             ob_start();
-            include($response->getViewPath() . $response->getViewFile());
+            include($response->getViewPath() . DS . $response->getViewFile() . ".phtml");
             $page_content = ob_get_contents();
             ob_end_clean();
         } else {
@@ -42,9 +42,9 @@ class HtmlRenderer extends Renderer
         Core::i()->log->debug(
             'Trying to load layout ' . _SITE_PATH_ . DS . $response->getLayoutPath() . DS . $response->getLayoutFile()
         );
-        if (file_exists(_SITE_PATH_ . DS . '_framework' . DS . $this->layout)) {
+        if (file_exists($response->getLayoutPath() . DS . $response->getLayoutFile() . ".phtml")) {
             ob_start();
-            include(_SITE_PATH_ . DS . '_framework' . DS . $this->layout);
+            include($response->getLayoutPath() . DS . $response->getLayoutFile() . ".phtml");
             $page_content = ob_get_contents();
             ob_end_clean();
         } else {

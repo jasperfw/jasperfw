@@ -42,8 +42,8 @@ class TwigRenderer extends Renderer
         $twig->addExtension(new StringLoaderExtension());
         $twig_loader->addPath($response->getViewPath());
         $twig_loader->addPath($response->getLayoutPath()); //TODO: Add namespacing
-        $output['layout__file'] = $response->getLayoutFile();
+        $output['layout__file'] = $response->getLayoutFile() . '.twig';
         // Render the document
-        echo $twig->render($response->getViewFile(), $output);
+        echo $twig->render($response->getViewFile() . '.twig', $output);
     }
 }
