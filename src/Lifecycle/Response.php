@@ -44,6 +44,8 @@ class Response
     protected $action;
     /** @var string The path to the layout file */
     protected $layout_path;
+    /** @var string The name of the layout file */
+    protected $layout_file;
     /** @var string The path to the view file */
     protected $view_path;
     /** @var string The filename of the view file */
@@ -427,6 +429,11 @@ class Response
         }
     }
 
+    public function setLayoutFile(string $layout_file): void
+    {
+        $this->layout_file = $layout_file;
+    }
+
     /**
      * Get the path to the view file. If no path has been set, uses the default path.
      * @return string The path to the view file
@@ -434,7 +441,8 @@ class Response
     public function getViewPath(): string
     {
         if ($this->view_path === null) {
-            return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getModule() . DS . 'View' . DS . $this->getController();
+            return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getModule(
+                ) . DS . 'View' . DS . $this->getController();
         }
         return $this->view_path;
     }
