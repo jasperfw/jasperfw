@@ -3,8 +3,8 @@
 namespace WigeDev\JasperCore\Lifecycle;
 
 use Exception;
-use WigeDev\JasperCore\Core;
 use WigeDev\JasperCore\Exception\NoRouteMatchException;
+use WigeDev\JasperCore\Jasper;
 
 /**
  * Class Router
@@ -38,19 +38,21 @@ class Router
     {
         $this->reroutes++;
         if ($this->reroutes > 10) {
-            Core::i()->log->critical('The request for ' . $request->getURI() . ' has redirected too many times!');
+            Jasper::i()->log->critical('The request for ' . $request->getURI() . ' has redirected too many times!');
             $response->setStatusCode(508);
             return;
         }
+        // Clear the MCA values back to default
+        $response->resetMCAValues();
         // Get the module and action if provided.
         try {
             $variables = $this->matchRoute($request->getUriPieces());
         } catch (NoRouteMatchException $e) {
-            Core::i()->log->critical('The requested URL ' . $request->getURI() . ' could not be found.');
             $response->setStatusCode(404);
+            Jasper::i()->log->warning('The requested URL ' . $request->getURI() . ' could not be found.');
+            $response->addMessage('The requested URL ' . $request->getURI() . ' could not be found.');
             return;
         }
-        $response->resetMCAValues();
         if (isset($variables['module'])) {
             $response->setModule($variables['module']);
             unset($variables['module']);
@@ -64,10 +66,6 @@ class Router
             unset($variables['action']);
         }
         $response->setViewType($request->getExtension());
-        // Store the variables for retrieval TODO: Should this be done? Seems insecure.
-//        if (count($variables) > 0) {
-//            $response->setValues($variables);
-//        }
     }
 
     /**
@@ -90,7 +88,7 @@ class Router
             throw new NoRouteMatchException('Unable to route url ' . $url);
         }
         $route_name = array_shift($matches);
-        Core::i()->log->debug('URL matched route ' . $route_name);
+        Jasper::i()->log->debug('URL matched route ' . $route_name);
         $route_config = $this->route_definitions[$route_name];
         $return = (isset($route_config['defaults'])) ? $route_config['defaults'] : [];
         foreach ($matches as $name => $match) {
@@ -125,7 +123,7 @@ class Router
      */
     protected function loadRoutes(): void
     {
-        $routeConfig = Core::i()->config->getConfiguration('routes');
+        $routeConfig = Jasper::i()->config->getConfiguration('routes');
         // If there is a default route, make it last in the array
         if (isset($routeConfig['default'])) {
             $default_route = $routeConfig['default'];

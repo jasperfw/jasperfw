@@ -3,7 +3,7 @@
 namespace WigeDev\JasperCore\Renderer;
 
 use Exception;
-use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Jasper;
 use WigeDev\JasperCore\Lifecycle\Response;
 
 /**
@@ -50,7 +50,7 @@ abstract class Renderer
     {
         // Make sure the route configuration has been loaded
         if (!isset($this->routes)) {
-            $this->routes = Core::i()->config->getConfiguration('routes');
+            $this->routes = Jasper::i()->config->getConfiguration('routes');
         }
         // Make sure the named route exists
         if (!isset($this->routes[$route_name])) {
@@ -78,10 +78,14 @@ abstract class Renderer
         }
         $url = ltrim($url, '/');
         // If a locale was specified, add that to the beginning of the url
-        if (Core::i()->locale_set) {
-            $url = $this->getLinkLocale(Core::i()->locale) . '/' . $url;
+        if (Jasper::i()->locale_set) {
+            $url = $this->getLinkLocale(Jasper::i()->locale) . '/' . $url;
         }
-        // TODO: Add base URL
+        // If a base folder is set, add it.
+        $base = Jasper::i()->config->getConfiguration('framework')['base'] ?? null;
+        if ($base !== null) {
+            $url = $base . '/' . $url;
+        }
         return '/' . $url;
     }
 
@@ -97,7 +101,7 @@ abstract class Renderer
      */
     public function createLink($path, $include_locale = false)
     {
-        $protocol = (Core::i()->request->isSecure()) ? 'https:' : 'http:';
+        $protocol = (Jasper::i()->request->isSecure()) ? 'https:' : 'http:';
         $base = $this->getBaseURL($include_locale);
         return $protocol . $base . $path;
     }
@@ -115,8 +119,8 @@ abstract class Renderer
     public function getBaseURL($include_locale = true)
     {
         $base = '//' . $_SERVER['HTTP_HOST'] . str_replace('index.php', '', $_SERVER['URL']);
-        if ($include_locale && Core::i()->locale_set) {
-            $base .= $this->getLinkLocale(Core::i()->locale) . '/';
+        if ($include_locale && Jasper::i()->locale_set) {
+            $base .= $this->getLinkLocale(Jasper::i()->locale) . '/';
         }
         return $base;
     }

@@ -2,6 +2,8 @@
 
 namespace WigeDev\JasperCore\Lifecycle;
 
+use WigeDev\JasperCore\Jasper;
+
 /**
  * Class Request
  *
@@ -20,20 +22,16 @@ class Request
     protected $query;
     /** @var mixed The post contents */
     protected $post;
-    /** @var string The module that the request was routed to */
-    protected $module = 'index';
-    /** @var string The controller the request was routed to */
-    protected $controller = 'index';
-    /** @var string The action the request was routed to */
-    protected $action = 'index';
+    /** @var string The base directory - use if the framework is not in the root of the domain */
+    protected $baseDirectory;
     /** @var string The locale as determined from the request URI */
     protected $locale;
     /** @var string The IP address of the remote user. Attempts to resolve original IP address if there are proxies */
-    protected $remote_ip;
+    protected $remoteIP;
     /** @var string The raw IP address of the remote user. This is the IP address passed by the server. */
-    protected $raw_remote_ip;
+    protected $rawRemoteIP;
     /** @var string[] Array of uri pieces */
-    protected $uri_pieces;
+    protected $uriPieces;
     /** @var string The name of the file being requested */
     protected $filename;
     /** @var string The extension of the file being requested */
@@ -51,8 +49,9 @@ class Request
         $this->query = $_GET;
         $this->post = $_POST;
         $this->determineRemoteIP();
+        $this->baseDirectory = Jasper::i()->config->getConfiguration('framework')['base'] ?? '';
         $this->processURI($this->uri);
-        $this->path = implode('/', $this->uri_pieces);
+        $this->path = implode('/', $this->uriPieces);
     }
 
     /**
@@ -93,7 +92,7 @@ class Request
      */
     public function getUriPieces(): array
     {
-        return $this->uri_pieces;
+        return $this->uriPieces;
     }
 
     /**
@@ -173,18 +172,16 @@ class Request
      * Warning! This value is easily spoofed. If logging IP addresses, it is highly recommended to also log the
      * RawRemoteIP unless a proxy server is being used for the site, such as a load balancer.
      *
-     * //TODO: make backtracing something that is configurable / disable-able
-     *
      * @return string The remote IP address
      */
     public function getRemoteIP(): string
     {
-        return $this->remote_ip;
+        return $this->remoteIP;
     }
 
     public function getRawRemoteIP(): string
     {
-        return $this->raw_remote_ip;
+        return $this->rawRemoteIP;
     }
 
     /**
@@ -201,20 +198,27 @@ class Request
      * Splits the URL into an array
      *
      * @param string $url The URL to be processed
-     *
-     * @return array The pieces of the array
      */
     protected function processURI(string $url): void
     {
+        // Remove the base folder if one is set
+        if ($this->baseDirectory !== '') {
+            $bd = '/' . $this->baseDirectory;
+            if (substr($url, 0, strlen($bd)) == $bd) {
+                $url = substr($url, strlen($bd));
+            }
+        }
         // Remove query string if it is set
         $url = explode('?', $url)[0];
+        // Remvoe the leading slash
         $url = trim($url, '/');
+        // Split the URL by the slashes
         $url_array = explode('/', $url);
         $this->extractLocale($url_array);
         $filename = array_pop($url_array);
         $this->extension = pathinfo($filename, PATHINFO_EXTENSION);
         $url_array[] = $this->filename = pathinfo($filename, PATHINFO_FILENAME);
-        $this->uri_pieces = $url_array;
+        $this->uriPieces = $url_array;
     }
 
     /**
@@ -225,7 +229,7 @@ class Request
     protected function extractLocale(array &$url_array): void
     {
         if (count($url_array) > 0 && preg_match('/^([a-z0-9]{2,3})-([a-z0-9]{4}-?)?([a-z0-9]{2,3})?$/i',
-                $url_array[0])) {
+                                                $url_array[0])) {
             $this->setLocale(array_shift($url_array));
         }
         reset($url_array);
@@ -239,17 +243,16 @@ class Request
      */
     private function determineRemoteIP(): string
     {
-        if (null === $this->remote_ip) {
+        if (null === $this->remoteIP) {
             $ip = $_SERVER['REMOTE_ADDR'];
             if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
                 $ip = explode(',', $ip);
                 $ip = trim($ip[0]);
             }
-            $this->remote_ip = $ip;
+            $this->remoteIP = $ip;
         }
-        return $this->remote_ip;
+        return $this->remoteIP;
     }
-
 
 }

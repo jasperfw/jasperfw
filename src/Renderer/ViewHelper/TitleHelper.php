@@ -9,7 +9,7 @@
 namespace WigeDev\JasperCore\Renderer\ViewHelper;
 
 
-use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Jasper;
 
 /**
  * Class TitleHelper
@@ -34,7 +34,7 @@ class TitleHelper extends ViewHelper
      */
     public function init(?string $configuration = 'project'): void
     {
-        $config = Core::i()->config->getConfiguration($configuration);
+        $config = Jasper::i()->config->getConfiguration($configuration);
         if (isset($config['site_name'])) {
             $this->site_name = $config['site_name'];
         }

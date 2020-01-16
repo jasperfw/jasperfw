@@ -8,7 +8,7 @@
 
 namespace WigeDev\JasperCore\Renderer\ViewHelper;
 
-use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Jasper;
 
 /**
  * The ScriptHelper is used to define scripts that should be contained in the header. Scripts can be passed in a
@@ -36,7 +36,7 @@ class ScriptHelper extends ViewHelperCollection
      */
     public function init(?string $configuration = 'scripts') : void
     {
-        $config = Core::i()->config->getConfiguration($configuration);
+        $config = Jasper::i()->config->getConfiguration($configuration);
         foreach ($config as $script) {
             if (isset($script['order']) && $script['order'] == 'prepend') {
                 $this->prepend($script);
@@ -111,7 +111,7 @@ class ScriptHelper extends ViewHelperCollection
         } elseif (count($args) == 2 && is_string($args[0]) && is_string($args[1])) {
             return '<script type="'.$args[1].'">'."\n".$args[0]."\n</script>\n";
         }
-        Core::i()->log->warning('Unable to interpret script. Not added.');
+        Jasper::i()->log->warning('Unable to interpret script. Not added.');
         return false;
     }
 
@@ -125,7 +125,7 @@ class ScriptHelper extends ViewHelperCollection
     private function makeLink($args)
     {
         if (!isset($args['src'])) {
-            Core::i()->log->warning('Unable to add header script, no src attribute.');
+            Jasper::i()->log->warning('Unable to add header script, no src attribute.');
             return false;
         }
         $link = '<script';

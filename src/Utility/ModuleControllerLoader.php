@@ -2,7 +2,7 @@
 namespace WigeDev\JasperCore\Utility;
 
 use Exception;
-use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Jasper;
 use WigeDev\JasperCore\Lifecycle\Response;
 
 /**
@@ -20,7 +20,7 @@ class ModuleControllerLoader
      * Load the requested module/controller/action
      * @param Response $response The response managing the process
      */
-    public function load(Response $response) : void
+    public function load(Response $response): void
     {
         $this->response = $response;
         $this->checkModule();
@@ -30,9 +30,18 @@ class ModuleControllerLoader
             } catch (Exception $exception) {
                 // If an exception is thrown in the code and not caught, switch over to the error handler
                 $this->response->setStatusCode(500);
-                $this->loadErrorModule();
             }
-        } else {
+        }
+    }
+
+    /**
+     * If the status of the response is not 200, runs the error module.
+     *
+     * @param Response $response The response object
+     */
+    public function loadError(Response $response): void
+    {
+        if ($this->response->getStatusCode() !== 200) {
             $this->loadErrorModule();
         }
     }
@@ -40,7 +49,7 @@ class ModuleControllerLoader
     /**
      * Test the module to make sure it exists and can be loaded/viewed.
      */
-    protected function checkModule() : void
+    protected function checkModule(): void
     {
         $namespaced_class = $this->getFullyQualifiedClass(
             $this->response->getModule(),
@@ -48,25 +57,26 @@ class ModuleControllerLoader
         );
         if (!class_exists($namespaced_class)) {
             $this->response->setStatusCode(404);
-            Core::i()->log->warning('Unable to load controller ' . $namespaced_class);
+            Jasper::i()->log->warning('Unable to load controller ' . $namespaced_class);
             return;
         }
         if (!call_user_func($namespaced_class . '::canView')) {
             var_dump($namespaced_class);
             $this->response->setStatusCode(403);
-            Core::i()->log->error('User is not authorized to view ' . $namespaced_class);
+            Jasper::i()->log->error('User is not authorized to view ' . $namespaced_class);
             return;
         }
         if (method_exists($namespaced_class, $this->getActionMethodName($this->response->getAction()))) {
-            $this->response->setStatusCode(200);
+            return;
         } elseif (method_exists($namespaced_class, 'indexAction')) {
-            Core::i()->log->notice(
+            Jasper::i()->log->notice(
                 'Requested action ' . $this->response->getAction() . ' not found in ' . $namespaced_class
             );
             $this->response->setAction('index');
-            $this->response->setStatusCode(200);
         } else {
-            Core::i()->log->error('Controller ' . $namespaced_class . ' does not have a public indexAction method defined.');
+            Jasper::i()->log->error(
+                'Controller ' . $namespaced_class . ' does not have a public indexAction method defined.'
+            );
             $this->response->setStatusCode(500);
         }
     }
@@ -84,16 +94,21 @@ class ModuleControllerLoader
     /**
      * Load an error module based on the error code.
      */
-    protected function loadErrorModule() : void
+    public function loadErrorModule(): void
     {
         $fqn = $this->getFullyQualifiedClass('index', 'index');
         $the_module = new $fqn();
         $action = $this->getActionMethodName((string)$this->response->getStatusCode());
         if (method_exists($fqn, $action)) {
-            call_user_func_array(array($the_module, $action), [$this->response->getVariables()]);
+            call_user_func_array([$the_module, $action], [$this->response->getVariables()]);
+        } elseif (method_exists($fqn, $this->getActionMethodName('index'))) {
+            call_user_func_array([$the_module, $this->getActionMethodName('index')], [$this->response->getVariables()]);
         } else {
             // There is no error handler for this error, show the index but don't pass variables
-            call_user_func_array(array($the_module, $this->getActionMethodName('index')), []);
+            $fqn = $this->getFullyQualifiedClass('index', 'index');
+            $the_module = new $fqn();
+            $action = $this->getActionMethodName('index');
+            call_user_func_array([$the_module, $action], []);
         }
     }
 

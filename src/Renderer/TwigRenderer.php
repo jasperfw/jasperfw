@@ -13,7 +13,6 @@ use WigeDev\JasperCore\Lifecycle\Response;
  * Class TwigRenderer
  *
  * Renders the response as an HTML document using the Twig template engine from Symphony
- * TODO: Need to add the folder paths for rendering.
  *
  * @package WigeDev\JasperCore\Renderer
  */
@@ -31,7 +30,8 @@ class TwigRenderer extends Renderer
         parent::render($response);
         // Assemble the data to be displayed
         $output = $response->getValues();
-        $output['data'] = $response->getData();
+        $output['_data'] = $response->getData();
+        $output['_messages'] = $response->getMessages();
         //$base = $this->getBaseURL(false);
         //$response->getViewHelper('meta')->prepend('base', $base);
         //extract($response->getVariables(), EXTR_SKIP);

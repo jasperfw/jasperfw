@@ -9,7 +9,7 @@
 namespace WigeDev\JasperCore\Renderer\ViewHelper;
 
 use Exception;
-use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Jasper;
 
 /**
  * Class StyleSheetHelper
@@ -30,7 +30,7 @@ class StylesheetHelper extends ViewHelperCollection
      */
     public function init(?string $configuration = 'stylesheets'): void
     {
-        $config = Core::i()->config->getConfiguration($configuration);
+        $config = Jasper::i()->config->getConfiguration($configuration);
         foreach ($config as $script) {
             $this->append($script);
         }
@@ -115,7 +115,7 @@ class StylesheetHelper extends ViewHelperCollection
             $components = $args[1];
             return $this->makeLink($components);
         }
-        Core::i()->log->warning('Unable to interpret stylesheet. Not added.');
+        Jasper::i()->log->warning('Unable to interpret stylesheet. Not added.');
         return false;
     }
 
@@ -129,7 +129,7 @@ class StylesheetHelper extends ViewHelperCollection
     private function makeLink($args)
     {
         if (!isset($args['href'])) {
-            Core::i()->log->warning('Unable to add stylesheet, no href attribute.');
+            Jasper::i()->log->warning('Unable to add stylesheet, no href attribute.');
             return false;
         }
         if (!isset($args['rel'])) {

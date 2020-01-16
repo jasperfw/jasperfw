@@ -16,11 +16,6 @@ class JsonRenderer extends Renderer
         $variables = $response->getVariables();
         $variables['success'] = $response->getStatusCode();
         $variables['messages'] = $response->getMessages();
-        // For the dev environment, add the debug information to the variables array
-        if ($_SESSION['debug'] === true) {
-            // TODO: Output log
-            //$variables['debug'] = Core::i()->log->getEventArray();
-        }
         $page_content = json_encode($variables, JSON_UNESCAPED_UNICODE);
         echo $page_content;
     }

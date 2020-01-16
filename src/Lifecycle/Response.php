@@ -2,8 +2,8 @@
 namespace WigeDev\JasperCore\Lifecycle;
 
 use Exception;
-use WigeDev\JasperCore\Core;
 use WigeDev\JasperCore\Exception\RenderingException;
+use WigeDev\JasperCore\Jasper;
 use WigeDev\JasperCore\Renderer\Renderer;
 use WigeDev\JasperCore\Renderer\ViewHelper\ViewHelper;
 use WigeDev\JasperCore\Utility\HTTPUtilities;
@@ -13,8 +13,6 @@ use WigeDev\JasperCore\Utility\HTTPUtilities;
  *
  * This class represents the response that will be returned to the client. Everything from the view and rendering to the
  * status code and error messages are managed through this class.
- *
- * TODO: Set the layout and view paths, add getters
  */
 class Response
 {
@@ -339,7 +337,7 @@ class Response
 
     protected function loadConfiguration()
     {
-        $config = Core::i()->config->getConfiguration('view');
+        $config = Jasper::i()->config->getConfiguration('view');
         //$config = $this->parseConfiguration($config);
         foreach ($config as $key => $configuration) {
             if ($key === 'renderers') {
@@ -403,7 +401,7 @@ class Response
      */
     protected function determineViewType()
     {
-        $filename = Core::i()->request_uri;
+        $filename = Jasper::i()->request_uri;
         $extension = HTTPUtilities::getFileExtension($filename);
         if (PHP_SAPI === 'cli' || PHP_SAPI === 'cli-server') {
             // Extension is irrelevant, use the cli renderer
@@ -412,7 +410,7 @@ class Response
         } elseif (!is_null($extension)) {
             $this->setViewType($extension);
         }
-        Core::i()->log->debug('View Type: ' . $this->view_type);
+        Jasper::i()->log->debug('View Type: ' . $this->view_type);
     }
 
     public function getLayoutPath(): string

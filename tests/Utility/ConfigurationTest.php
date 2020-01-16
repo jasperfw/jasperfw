@@ -3,8 +3,8 @@ namespace WigeDev\JasperCoreTests\Utility;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use WigeDev\JasperCore\Testing\FrameworkTestCase;
 use WigeDev\JasperCore\Utility\Configuration;
-use WigeDev\JasperCoreTests\FrameworkTestCase;
 
 class ConfigurationTest extends FrameworkTestCase
 {
@@ -31,7 +31,7 @@ class ConfigurationTest extends FrameworkTestCase
 
     public function testGivenFileThatDoesntExistReturnFalse()
     {
-        $sut = new Configuration();
+        $sut = new Configuration([]);
         $this->assertFalse($sut->parseFile(vfsStream::url('config/noexists.php')));
     }
 
@@ -47,7 +47,7 @@ class ConfigurationTest extends FrameworkTestCase
 
     public function testGivenFileThatIsValidProcessConfigurationAndReturnTrue()
     {
-        $sut = new Configuration();
+        $sut = new Configuration([]);
         $this->assertTrue($sut->parseFile(vfsStream::url('config/config.php')));
     }
 
@@ -58,7 +58,7 @@ class ConfigurationTest extends FrameworkTestCase
 
     public function testGivenCategoryReturnsProperSettings()
     {
-        $sut = new Configuration();
+        $sut = new Configuration([]);
         $this->assertTrue($sut->parseFile(vfsStream::url('config/config.php')));
         $configuration = $sut->getConfiguration('routes');
         $expectedConfiguration = [
@@ -91,7 +91,7 @@ class ConfigurationTest extends FrameworkTestCase
 
     public function testGivenNonExistantCategoryReturnsEmptyArray()
     {
-        $sut = new Configuration();
+        $sut = new Configuration([]);
         $this->assertEquals([], $sut->getConfiguration('invalid'));
     }
 

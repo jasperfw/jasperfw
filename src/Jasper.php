@@ -14,9 +14,9 @@ use WigeDev\JasperCore\Utility\Configuration;
 use WigeDev\JasperCore\Utility\ModuleControllerLoader;
 
 /**
- * Class Core
+ * Class Jasper
  *
- * The entry point for the framework, Core sets up the main functionality.
+ * The entry point for the framework, Jasper sets up the main functionality.
  *
  * @package WigeDev\JasperCore
  *
@@ -31,10 +31,12 @@ use WigeDev\JasperCore\Utility\ModuleControllerLoader;
  * @property ModuleControllerLoader mcl          The loader for module controllers
  * @property ContainerInterface     c            The dependency injection container
  */
-class Core
+class Jasper
 {
-    /** @var Core The framework object - I know, singleton, evil, bad. */
+    /** @var Jasper The framework object - I know, singleton, evil, bad. */
     private static $framework = null;
+    /** @var array Configuration file and folder paths */
+    protected static $configurations = [];
     /** @var ContainerInterface The dependency injection container */
     protected static $container;
     /** @var LoggerInterface Reference to the log utility */
@@ -48,19 +50,36 @@ class Core
     /** @var ModuleControllerLoader The loader for module controllers */
     protected $mcl;
     /** @var EventHandlerCollection */
-    private $event_handlers;
+    protected $eventHandlers;
     /** @var Configuration The configuration manager */
-    private $config;
-    private $output_type;
+    protected $config;
 
     /**
      * Function accesses the Core framework object. Initializes the framwork if it has not been done already.
      *
-     * @return Core Reference to the framework singleton
+     * @return Jasper Reference to the framework singleton
      */
-    public static function i(): Core
+    public static function i(): Jasper
     {
         return static::$framework;
+    }
+
+    /**
+     * Specify a path to a configuration file or a directory of configuration files that should be processed. If the
+     * framework is already initialized, processes the configuration file.
+     *
+     * @param string $configurationPath
+     */
+    public static function addConfigurationPath(string $configurationPath): void
+    {
+        static::$configurations[] = $configurationPath;
+        if (static::isInitialized()) {
+            if (is_file($configurationPath)) {
+                static::i()->config->parseFile($configurationPath);
+            } else {
+                static::i()->config->parseFolder($configurationPath);
+            }
+        }
     }
 
     /**
@@ -74,9 +93,9 @@ class Core
     /**
      * Allows for a replacement framework instance to be inserted. This is useful for unit testing.
      *
-     * @param Core $core New framework instance
+     * @param Jasper $core New framework instance
      */
-    public static function overrideFramework(Core $core): void
+    public static function overrideFramework(Jasper $core): void
     {
         static::$framework = $core;
     }
@@ -112,9 +131,9 @@ class Core
     /**
      * Function initializes the framework object.
      *
-     * @return Core
+     * @return Jasper
      */
-    public static function _init(): Core
+    public static function _init(): Jasper
     {
         // If the Framework has already been initialized, return it
         if (static::$framework !== null) {
@@ -123,7 +142,7 @@ class Core
         // Use the bootstrapper to set up the environment
         static::bootstrap();
         // Initialize the framework
-        static::$framework = new Core();
+        static::$framework = new Jasper();
         // Start the event handler
         try {
             static::$framework->fireEvent('initialized');
@@ -144,11 +163,10 @@ class Core
      */
     public function __construct()
     {
-        $this->event_handlers = new EventHandlerCollection();
-        $this->config = new Configuration(_CONFIG_PATH_);
+        $this->eventHandlers = new EventHandlerCollection();
+        $this->config = new Configuration(static::$configurations);
         $this->router = new Router();
         $this->mcl = new ModuleControllerLoader();
-        //TODO: Get the log settings from config and set up logging.
     }
 
     public function run(): void
@@ -162,13 +180,15 @@ class Core
             $this->fireEvent('beforeload');
             $this->mcl->load($this->response);
             $this->fireEvent('afterload');
+            $this->fireEvent('beforeerrorhandling');
+            $this->mcl->loadError($this->response);
+            $this->fireEvent('aftererrorhandling');
             $this->fireEvent('beforerender');
             $this->response->render();
             $this->fireEvent('afterrender');
             $this->fireEvent('beginshutdown');
         } catch (Exception $exception) {
             // If an uncaught exception gets here, there isn't much we can really do but log it and show a basic error
-            //TODO: Add an error handler
             echo 'Error 500 - An unexpected error has occurred.';
             $this->log->critical('An uncaught exception occurred. ' . $exception->getMessage());
         }
@@ -226,11 +246,11 @@ class Core
      *
      * @param EventHandler $listener
      *
-     * @return Core
+     * @return Jasper
      * @throws Exception
      *
      */
-    public function registerEventHandler(EventHandler $listener): Core
+    public function registerEventHandler(EventHandler $listener): Jasper
     {
         $this->event_handlers->addItem($listener);
         return $this;
@@ -245,10 +265,10 @@ class Core
      * @param string $method       The method to call
      * @param array  $arguments    Optional parameters to pass to the method
      *
-     * @return Core
+     * @return Jasper
      * @throws Exception
      */
-    public function on(string $event, $class_or_obj, string $method, array $arguments = []): Core
+    public function on(string $event, $class_or_obj, string $method, array $arguments = []): Jasper
     {
         $this->registerEventHandler(new EventHandler($event, $class_or_obj, $method, $arguments));
         return $this;
@@ -263,8 +283,8 @@ class Core
      */
     public function fireEvent(string $event): void
     {
-        $this->log->debug('Event {event} has been fired.', ['event' => $event]);
-        foreach ($this->event_handlers as $handler) {
+        $this->log->debug('Event "' . $event . '" has been fired.', ['event' => $event]);
+        foreach ($this->eventHandlers as $handler) {
             /** @var EventHandler $handler */
             if ($event === $handler->getEvent()) {
                 $handler->execute();
@@ -284,12 +304,12 @@ class Core
 /**
  * Shortcut to access the framework
  */
-function FW()
+function J()
 {
     try {
-        return Core::i();
+        return Jasper::i();
     } catch (Exception $exception) {
-        Core::i()->log->critical('An uncaught exception has occurred: ' . $exception->getMessage());
+        Jasper::i()->log->critical('An uncaught exception has occurred: ' . $exception->getMessage());
         exit();
     }
 }

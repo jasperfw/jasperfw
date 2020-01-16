@@ -1,9 +1,9 @@
 <?php
 /**
- * Set up the environment so that the Framework can be loaded and executed. This file is required in by Core::_init.
+ * Set up the environment so that the Framework can be loaded and executed. This file is required in by Jasper::_init.
  */
 
-use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Jasper;
 
 // FUTURE: Enable the session handler
 //require_once('SessionHandler.php');
@@ -61,23 +61,23 @@ if (ENVIRONMENT === 'test' || ENVIRONMENT == 'cli') {
 // Register a custom error handler
 set_error_handler(
     function ($errno, $errstr, $errfile = null, $errline = null) {
-        if (false === Core::isInitialized()) {
+        if (false === Jasper::isInitialized()) {
             echo "<h1>Error 500</h1><p>Error $errno - $errstr in $errfile on $errline</p>";
         }
         // Process the error based on type
         switch ($errno) {
             case E_USER_ERROR:
             case E_ERROR:
-                Core::i()->log->error("$errstr -  on line $errline in file $errfile");
+            Jasper::i()->log->error("$errstr -  on line $errline in file $errfile");
                 break;
             case E_USER_WARNING:
             case E_WARNING:
-                Core::i()->log->warning("$errstr -  on line $errline in file $errfile");
+            Jasper::i()->log->warning("$errstr -  on line $errline in file $errfile");
                 break;
             case E_RECOVERABLE_ERROR:
             case E_USER_NOTICE:
             case E_NOTICE:
-                Core::i()->log->notice("$errstr -  on line $errline in file $errfile");
+            Jasper::i()->log->notice("$errstr -  on line $errline in file $errfile");
                 break;
             default:
                 echo "Unknown error type: [$errno] $errstr -  on line $errline in file $errfile<br />\n";

@@ -1,9 +1,9 @@
 <?php
 namespace WigeDev\JasperCore\Utility;
 
-use WigeDev\JasperCore\Core;
+use WigeDev\JasperCore\Jasper;
 
-use function WigeDev\JasperCore\FW;
+use function WigeDev\JasperCore\J;
 
 /**
  * Class Configuration
@@ -20,16 +20,29 @@ use function WigeDev\JasperCore\FW;
  */
 class Configuration
 {
-    protected $parsed_files = array();
-    protected $configuration = array();
+    protected $parsed_files = [];
+    protected $configuration = [];
     static $iteration = 0;
 
-    public function __construct(?string $config_path = null)
+    public function __construct(array $configurationPaths)
     {
-        if (is_dir($config_path)) {
-            $this->parseFolder($config_path);
-        } elseif (is_file($config_path)) {
-            $this->parseFile($config_path);
+        foreach ($configurationPaths as $path) {
+            $this->parseConfigurationPath($path);
+        }
+    }
+
+    /**
+     * Parses a provided configuration path. The path can be either a file that returns a PHP array, or a folder
+     * containing such files.
+     *
+     * @param string $configurationPath The path to the configuration file or folder
+     */
+    public function parseConfigurationPath(string $configurationPath)
+    {
+        if (is_dir($configurationPath)) {
+            $this->parseFolder($configurationPath);
+        } elseif (is_file($configurationPath)) {
+            $this->parseFile($configurationPath);
         }
     }
 
@@ -62,14 +75,14 @@ class Configuration
         if (is_readable($path)) {
             $array = include($path);
         } else {
-            if (isset(Core::i()->log)) {
-                FW()->log->debug('Config path ' . $path . ' could not be read.');
+            if (isset(Jasper::i()->log)) {
+                J()->log->info('Config path ' . $path . ' could not be read.');
             }
             return false;
         }
         if (!is_array($array)) {
-            if (isset(Core::i()->log)) {
-                FW()->log->debug('Config file ' . $path . ' is not an array.');
+            if (isset(Jasper::i()->log)) {
+                J()->log->warning('Config file ' . $path . ' is not an array.');
             }
             return false;
         }
