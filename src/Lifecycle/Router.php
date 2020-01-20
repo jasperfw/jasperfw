@@ -4,7 +4,8 @@ namespace WigeDev\JasperCore\Lifecycle;
 
 use Exception;
 use WigeDev\JasperCore\Exception\NoRouteMatchException;
-use WigeDev\JasperCore\Jasper;
+
+use function WigeDev\JasperCore\J;
 
 /**
  * Class Router
@@ -38,7 +39,7 @@ class Router
     {
         $this->reroutes++;
         if ($this->reroutes > 10) {
-            Jasper::i()->log->critical('The request for ' . $request->getURI() . ' has redirected too many times!');
+            J()->log->critical('The request for ' . $request->getURI() . ' has redirected too many times!');
             $response->setStatusCode(508);
             return;
         }
@@ -49,7 +50,7 @@ class Router
             $variables = $this->matchRoute($request->getUriPieces());
         } catch (NoRouteMatchException $e) {
             $response->setStatusCode(404);
-            Jasper::i()->log->warning('The requested URL ' . $request->getURI() . ' could not be found.');
+            J()->log->warning('The requested URL ' . $request->getURI() . ' could not be found.');
             $response->addMessage('The requested URL ' . $request->getURI() . ' could not be found.');
             return;
         }
@@ -65,7 +66,7 @@ class Router
             $response->setAction($variables['action']);
             unset($variables['action']);
         }
-        $response->setViewType($request->getExtension());
+        $response->setViewType($this->determineViewType($request->getExtension()));
     }
 
     /**
@@ -88,7 +89,7 @@ class Router
             throw new NoRouteMatchException('Unable to route url ' . $url);
         }
         $route_name = array_shift($matches);
-        Jasper::i()->log->debug('URL matched route ' . $route_name);
+        J()->log->debug('URL matched route ' . $route_name);
         $route_config = $this->route_definitions[$route_name];
         $return = (isset($route_config['defaults'])) ? $route_config['defaults'] : [];
         foreach ($matches as $name => $match) {
@@ -123,7 +124,7 @@ class Router
      */
     protected function loadRoutes(): void
     {
-        $routeConfig = Jasper::i()->config->getConfiguration('routes');
+        $routeConfig = J()->config->getConfiguration('routes');
         // If there is a default route, make it last in the array
         if (isset($routeConfig['default'])) {
             $default_route = $routeConfig['default'];
@@ -144,5 +145,23 @@ class Router
             $routeConfig[$route_name]['regex'] = '/^' . $regex . '$/i';
         }
         $this->route_definitions = $routeConfig;
+    }
+
+    /**
+     * Determines the view type, using the request in the Framework.
+     *
+     * @param string $extension The extension of the request
+     *
+     * @return string The detected view type - either the extension or 'c l i'
+     */
+    protected function determineViewType(string $extension): string
+    {
+        if (PHP_SAPI === 'cli' || PHP_SAPI === 'cli-server') {
+            // Extension is irrelevant, use the cli renderer
+            return 'c l i';
+        } elseif (!is_null($extension)) {
+            return $extension;
+        }
+        return '';
     }
 }

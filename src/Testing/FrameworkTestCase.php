@@ -6,6 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use WigeDev\JasperCore\Jasper;
+use WigeDev\JasperCore\Utility\Configuration;
 
 /**
  * Class FrameworkTestCase
@@ -20,12 +21,18 @@ class FrameworkTestCase extends TestCase
 {
     /** @var Jasper|MockObject */
     protected $mockJasper;
+    /** @var Configuration|MockObject */
+    public $mockConfig;
+    /** @var NullLogger */
+    public $mockLogger;
 
     protected function setUp(): void
     {
         //Get a copy of the testcase to use in the callback
         $testcase = $this;
         parent::setUp();
+        // Set up configuration
+        $this->configureConfiguration();
         //TODO: Set up mock logging
         $this->mockJasper = $this->getMockBuilder(Jasper::class)
             ->disableOriginalConstructor()
@@ -51,8 +58,29 @@ class FrameworkTestCase extends TestCase
         switch ($argument) {
             case 'log':
                 return new NullLogger();
+            case 'config':
+                return $this->mockConfig;
             default:
                 return null;
         }
+    }
+
+    /**
+     * Set up the mock configuration object that will be returned when J()->config is called.
+     */
+    protected function configureConfiguration(): void
+    {
+        $this->mockConfig = $this->getMockBuilder(Configuration::class)
+            ->onlyMethods(['getConfiguration'])
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * Set up the mock logger that will be returned when J()->log is called.
+     */
+    protected function configureLogger(): void
+    {
+        $this->mockLogger = new NullLogger();
     }
 }

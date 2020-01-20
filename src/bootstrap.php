@@ -43,8 +43,13 @@ if (!defined('_CONFIG_PATH_')) {
 // Try to figure out the environment. If you are unit testing, the bootstrapper should set this to "test".
 if (!defined('ENVIRONMENT')) {
     if (isset($_SERVER['HTTP_HOST'])) {
-        /** Environment - test, cli or production */
-        define('ENVIRONMENT', 'production');
+        if ($_SERVER['HTTP_HOST'] !== 'localhost') {
+            /** Environment - test, cli or production */
+            define('ENVIRONMENT', 'production');
+        } else {
+            /** Environment - test, cli or production */
+            define('ENVIRONMENT', 'test');
+        }
     } else {
         /** Environment - test, cli or production */
         define('ENVIRONMENT', 'cli');

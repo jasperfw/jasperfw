@@ -6,7 +6,6 @@ use WigeDev\JasperCore\Exception\RenderingException;
 use WigeDev\JasperCore\Jasper;
 use WigeDev\JasperCore\Renderer\Renderer;
 use WigeDev\JasperCore\Renderer\ViewHelper\ViewHelper;
-use WigeDev\JasperCore\Utility\HTTPUtilities;
 
 /**
  * Class Response
@@ -20,8 +19,6 @@ class Response
     protected $status_code = 200;
     /** @var Renderer The renderer that will be managing the output */
     protected $renderer;
-    /** @var bool True if the request has been routed. This does not indicate the success or failure of the routing. */
-    protected $is_routed = false;
     /** @var array The variables passed as part of the request */
     protected $variables = [];
     /** @var string[] Error messages and other output strings */
@@ -49,7 +46,7 @@ class Response
     /** @var string The filename of the view file */
     protected $view_file;
     /** @var ViewHelper[] The view helpers */
-    protected $view_helpers;
+    //protected $view_helpers;
     /** @var array List of renderers and their settings */
     protected $renderers;
     /** @var array Mapping of file extensions to renderer names. * is default */
@@ -62,6 +59,7 @@ class Response
     {
         $this->setLayoutPath(_ROOT_PATH_ . DS . 'layout'); // default layout folder, can be overrideen in the config
         $this->loadConfiguration();
+        $this->resetMCAValues();
     }
 
     /**
@@ -72,7 +70,7 @@ class Response
      */
     public function __set(string $name, $value): void
     {
-        $this->values[$name] = $value;
+        $this->setValue($name, $value);
     }
 
     /**
@@ -89,6 +87,97 @@ class Response
         } else {
             return null;
         }
+    }
+
+    /**
+     * Set a value to be used in the rendered output. This is typically a single value that will be put into an HTML
+     * view or a web page.
+     *
+     * @param string $key   The name of the value
+     * @param mixed  $value The value, may be a string or other object
+     */
+    public function setValue(string $key, $value): void
+    {
+        $this->values[$key] = $value;
+    }
+
+    /**
+     * Add multiple values at once. Any existing values with duplicate keys will be replaced with the new value.
+     *
+     * @param array $values The new values
+     */
+    public function setValues(array $values): void
+    {
+        $this->values = array_merge($this->values, $values);
+    }
+
+    /**
+     * Get the values to include into the rendered output
+     */
+    public function getValues(): array
+    {
+        return $this->values;
+    }
+
+    /**
+     * Set the data payload of the response. Typically this is an array. Responses that are informational web pages may
+     * not have any data set at all.
+     *
+     * @param mixed $data The core data of the response.
+     */
+    public function setData($data): void
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * Returns the core data payload of the response.
+     * @return mixed The data for the response
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * Set the variables that were submitted as the request
+     *
+     * @param array $getVars  The variables that were part of the get
+     * @param array $postVars The variables that were part of the post
+     */
+    public function setVariables(array $getVars, array $postVars): void
+    {
+        $this->variables = array_merge($getVars, $postVars);
+    }
+
+    /**
+     * Get the variables that were set as part of the request
+     *
+     * @return array The values that have been set to include in the response
+     */
+    public function getVariables(): array
+    {
+        return $this->variables;
+    }
+
+    /**
+     * Set an error message
+     *
+     * @param string $message
+     */
+    public function addMessage(string $message): void
+    {
+        $this->messages[] = $message;
+    }
+
+    /**
+     * Get the error messages
+     *
+     * @return string[]
+     */
+    public function getMessages(): array
+    {
+        return $this->messages;
     }
 
     /**
@@ -129,6 +218,18 @@ class Response
 //        }
 //        return null;
 //    }
+
+    /**
+     * Reset the Module Controller and Action values to "index" This is useful when rerouting or doing an internal
+     * redirect to ensure prior values are removed.
+     */
+    public function resetMCAValues()
+    {
+        $this->setModule('index');
+        $this->setController('index');
+        $this->setAction('index');
+        $this->setViewType('');
+    }
 
     /**
      * Set the module that was requested
@@ -235,97 +336,6 @@ class Response
     }
 
     /**
-     * Reset the Module Controller and Action values to "index" This is useful when rerouting or doing an internal
-     * redirect to ensure prior values are removed.
-     */
-    public function resetMCAValues()
-    {
-        $this->setModule('index');
-        $this->setController('index');
-        $this->setAction('index');
-        $this->setViewType('');
-    }
-
-    /**
-     * Set a value to be used in the rendered output. This is typically a single value that will be put into an HTML
-     * view or a web page.
-     * @param string $key The name of the value
-     * @param mixed $value The value, may be a string or other object
-     */
-    public function setValue(string $key, $value): void
-    {
-        $this->values[$key] = $value;
-    }
-
-    /**
-     * Add multiple values at once. Any existing values with duplicate keys will be replaced with the new value.
-     *
-     * @param array $values The new values
-     */
-    public function setValues(array $values): void
-    {
-        $this->values = array_merge($this->values, $values);
-    }
-
-    /**
-     * Get the values to include into the rendered output
-     */
-    public function getValues(): array
-    {
-        return $this->values;
-    }
-
-    /**
-     * Set the data payload of the response. Typically this is an array. Responses that are informational web pages may
-     * not have any data set at all.
-     *
-     * @param mixed $data The core data of the response.
-     */
-    public function setData($data): void
-    {
-        $this->data = $data;
-    }
-
-    /**
-     * Returns the core data payload of the response.
-     * @return mixed The data for the response
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * Get the variables that were set as part of the request
-     *
-     * @return array The values that have been set to include in the response
-     */
-    public function getVariables(): array
-    {
-        return $this->variables;
-    }
-
-    /**
-     * Set an error message
-     *
-     * @param string $message
-     */
-    public function addMessage(string $message): void
-    {
-        $this->messages[] = $message;
-    }
-
-    /**
-     * Get the error messages
-     *
-     * @return string[]
-     */
-    public function getMessages(): array
-    {
-        return $this->messages;
-    }
-
-    /**
      * Perform the rendering operation.
      * @throws RenderingException
      */
@@ -342,6 +352,12 @@ class Response
         foreach ($config as $key => $configuration) {
             if ($key === 'renderers') {
                 $this->renderers = $configuration;
+            } elseif ($key === 'default_view_type') {
+                $this->default_view_type = $configuration;
+            } elseif ($key === 'default_layout_path') {
+                $this->layout_path = $configuration;
+            } elseif ($key === 'default_layout_file') {
+                $this->layout_file = $configuration;
             } else {
                 $this->__set($key, $configuration);
             }
@@ -360,57 +376,6 @@ class Response
                 $this->extension_map[$extension] = $name;
             }
         }
-    }
-
-    /**
-     * Custom configuration parser that will integrate certain elements of the configuration as returned by the
-     * configuration manager.
-     *
-     * @param array[] $configuration
-     *
-     * @return array The parsed configuration
-     */
-    protected function parseConfiguration($configuration)
-    {
-        $return = [];
-        foreach ($configuration as $page) {
-            foreach ($page as $key => $setting) {
-                if ($key == 'helpers') {
-                    foreach ($setting as $a => $b) {
-                        if (!isset($return['renderers'])) {
-                            $return['renderers'] = [];
-                        }
-                        if (!isset($return['renderers'][$a])) {
-                            $return['renderers'][$a] = array();
-                        }
-                        if (!isset($return['renderers'][$a]['helpers'])) {
-                            $return['renderers'][$a]['helpers'] = array();
-                        }
-                        $return['renderers'][$a]['helpers'] = array_replace($return['renderers'][$a]['helpers'], $b);
-                    }
-                } else {
-                    $return[$key] = $setting;
-                }
-            }
-        }
-        return $return;
-    }
-
-    /**
-     * Determines the view type, using the request in the Framework.
-     */
-    protected function determineViewType()
-    {
-        $filename = Jasper::i()->request_uri;
-        $extension = HTTPUtilities::getFileExtension($filename);
-        if (PHP_SAPI === 'cli' || PHP_SAPI === 'cli-server') {
-            // Extension is irrelevant, use the cli renderer
-            $this->setViewType('c l i');
-            $url_array[] = $filename;
-        } elseif (!is_null($extension)) {
-            $this->setViewType($extension);
-        }
-        Jasper::i()->log->debug('View Type: ' . $this->view_type);
     }
 
     public function getLayoutPath(): string

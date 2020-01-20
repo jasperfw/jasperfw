@@ -107,9 +107,6 @@ class ConfigurationTest extends FrameworkTestCase
 use WigeDev\JasperCore\Renderer\CLIRenderer;
 use WigeDev\JasperCore\Renderer\HtmlRenderer;
 use WigeDev\JasperCore\Renderer\JsonRenderer;
-use WigeDev\JasperCore\Renderer\ViewHelper\MetaHelper;
-use WigeDev\JasperCore\Renderer\ViewHelper\StylesheetHelper;
-use WigeDev\JasperCore\Renderer\ViewHelper\TitleHelper;
 
 return array(
     'core' => array(),
@@ -129,11 +126,6 @@ return array(
             'html' => array(
                 'extensions' => array('php', 'html', 'htm'),
                 'handler' => HtmlRenderer::class,
-                'helpers' => array(
-                    'meta' => new MetaHelper(),
-                    'title' => new TitleHelper(),
-                    'stylesheet' => new StyleSheetHelper('meta'),
-                )
             ),
             'json' => array(
                 'extensions' => array('json'),

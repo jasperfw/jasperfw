@@ -5,6 +5,8 @@ use Exception;
 use WigeDev\JasperCore\Jasper;
 use WigeDev\JasperCore\Lifecycle\Response;
 
+use function WigeDev\JasperCore\J;
+
 /**
  * Class ModuleControllerLoader
  *
@@ -13,23 +15,20 @@ use WigeDev\JasperCore\Lifecycle\Response;
  */
 class ModuleControllerLoader
 {
-    /** @var Response Reference to the response object for retrieving values */
-    protected $response;
-
     /**
      * Load the requested module/controller/action
      * @param Response $response The response managing the process
      */
     public function load(Response $response): void
     {
-        $this->response = $response;
-        $this->checkModule();
-        if ($this->response->getStatusCode() === 200) {
+        $this->checkModule($response);
+        if ($response->getStatusCode() === 200) {
             try {
-                $this->loadModule();
+                $this->loadModule($response);
             } catch (Exception $exception) {
                 // If an exception is thrown in the code and not caught, switch over to the error handler
-                $this->response->setStatusCode(500);
+                J()->log->warning('An Exception happened: ' . $exception->getMessage(), $exception->getTrace());
+                $response->setStatusCode(500);
             }
         }
     }
@@ -41,68 +40,77 @@ class ModuleControllerLoader
      */
     public function loadError(Response $response): void
     {
-        if ($this->response->getStatusCode() !== 200) {
-            $this->loadErrorModule();
+        if ($response->getStatusCode() !== 200) {
+            $this->loadErrorModule($response);
         }
     }
 
     /**
      * Test the module to make sure it exists and can be loaded/viewed.
+     *
+     * @param Response $response
      */
-    protected function checkModule(): void
+    protected function checkModule(Response $response): void
     {
         $namespaced_class = $this->getFullyQualifiedClass(
-            $this->response->getModule(),
-            $this->response->getController()
+            $response->getModule(),
+            $response->getController()
         );
         if (!class_exists($namespaced_class)) {
-            $this->response->setStatusCode(404);
+            $response->setStatusCode(404);
             Jasper::i()->log->warning('Unable to load controller ' . $namespaced_class);
             return;
         }
         if (!call_user_func($namespaced_class . '::canView')) {
             var_dump($namespaced_class);
-            $this->response->setStatusCode(403);
+            $response->setStatusCode(403);
             Jasper::i()->log->error('User is not authorized to view ' . $namespaced_class);
             return;
         }
-        if (method_exists($namespaced_class, $this->getActionMethodName($this->response->getAction()))) {
+        if (method_exists($namespaced_class, $this->getActionMethodName($response->getAction()))) {
             return;
         } elseif (method_exists($namespaced_class, 'indexAction')) {
             Jasper::i()->log->notice(
-                'Requested action ' . $this->response->getAction() . ' not found in ' . $namespaced_class
+                'Requested action ' . $response->getAction() . ' not found in ' . $namespaced_class
             );
-            $this->response->setAction('index');
+            $response->setAction('index');
         } else {
             Jasper::i()->log->error(
                 'Controller ' . $namespaced_class . ' does not have a public indexAction method defined.'
             );
-            $this->response->setStatusCode(500);
+            $response->setStatusCode(500);
         }
     }
 
     /**
      * Load a module as requested and mapped by the router.
+     *
+     * @param Response $response
      */
-    protected function loadModule() : void
+    protected function loadModule(Response $response): void
     {
-        $fqn = $this->getFullyQualifiedClass($this->response->getModule(), $this->response->getController());
+        $fqn = $this->getFullyQualifiedClass($response->getModule(), $response->getController());
         $the_module = new $fqn();
-        call_user_func_array(array($the_module, $this->getActionMethodName($this->response->getAction())), [$this->response->getVariables()]);
+        call_user_func_array(
+            [$the_module, $this->getActionMethodName($response->getAction())],
+            [$response->getVariables()]
+        );
     }
 
     /**
      * Load an error module based on the error code.
+     *
+     * @param Response $response
      */
-    public function loadErrorModule(): void
+    public function loadErrorModule(Response $response): void
     {
         $fqn = $this->getFullyQualifiedClass('index', 'index');
         $the_module = new $fqn();
-        $action = $this->getActionMethodName((string)$this->response->getStatusCode());
+        $action = $this->getActionMethodName((string)$response->getStatusCode());
         if (method_exists($fqn, $action)) {
-            call_user_func_array([$the_module, $action], [$this->response->getVariables()]);
+            call_user_func_array([$the_module, $action], [$response->getVariables()]);
         } elseif (method_exists($fqn, $this->getActionMethodName('index'))) {
-            call_user_func_array([$the_module, $this->getActionMethodName('index')], [$this->response->getVariables()]);
+            call_user_func_array([$the_module, $this->getActionMethodName('index')], [$response->getVariables()]);
         } else {
             // There is no error handler for this error, show the index but don't pass variables
             $fqn = $this->getFullyQualifiedClass('index', 'index');

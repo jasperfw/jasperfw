@@ -6,6 +6,8 @@ use Exception;
 use WigeDev\JasperCore\Jasper;
 use WigeDev\JasperCore\Lifecycle\Response;
 
+use function WigeDev\JasperCore\J;
+
 /**
  * Class Renderer
  *
@@ -37,24 +39,49 @@ abstract class Renderer
     }
 
     /**
+     * Create a URL pointing to a static resource. This function is intended to be used to generate internal URLs
+     * pointing to assets such as stylesheets and scripts. The main feature of this function is that it will prepend
+     * the "base" URL of the site/application to the URL, as well as the locale string if $addLocale is true.
+     *
+     * @param string $url       The static internal URL that may need to be modified
+     * @param bool   $addLocale True if the local string should be added
+     *
+     * @return string The new URL
+     */
+    public function generateStaticURL(string $url, bool $addLocale = false): string
+    {
+        $url = ltrim($url, '/');
+        // If a locale was specified, add that to the beginning of the url
+        if (Jasper::i()->locale_set) {
+            $url = $this->getLinkLocale(Jasper::i()->locale) . '/' . $url;
+        }
+        // If a base folder is set, add it.
+        $base = Jasper::i()->config->getConfiguration('framework')['base'] ?? null;
+        if ($base !== null) {
+            $url = $base . '/' . $url;
+        }
+        return '/' . $url;
+    }
+
+    /**
      * Create a url based on a route. Passed variables will replace placeholders in the route. If the variable is not
      * part of the route, the variable will be appended as a query string.
      *
      * @param string $route_name The name of the route
      * @param array  $variables  An array of variables
      *
-     * @return mixed|string
-     * @throws Exception
+     * @return string
      */
-    public function generateURL($route_name, $variables = [])
+    public function generateURL($route_name, $variables = []): string
     {
         // Make sure the route configuration has been loaded
         if (!isset($this->routes)) {
             $this->routes = Jasper::i()->config->getConfiguration('routes');
         }
-        // Make sure the named route exists
+        // Make sure the named route exists, otherwise return an empty string
         if (!isset($this->routes[$route_name])) {
-            throw new Exception('The specified route, ' . $route_name . ', was not defined.');
+            J()->log()->warning('The specified route, ' . $route_name . ', was not defined.');
+            return '';
         }
         // Merge the default values and the passed variables into an array
         $variables = array_merge($this->routes[$route_name]['defaults'], $variables);

@@ -159,9 +159,9 @@ class Request
     /**
      * Get the locale string as determined from the request
      *
-     * @return string The locale string
+     * @return string|null The locale string or null if no locale is set
      */
-    public function getLocale(): string
+    public function getLocale(): ?string
     {
         return $this->locale;
     }
@@ -228,8 +228,10 @@ class Request
      */
     protected function extractLocale(array &$url_array): void
     {
-        if (count($url_array) > 0 && preg_match('/^([a-z0-9]{2,3})-([a-z0-9]{4}-?)?([a-z0-9]{2,3})?$/i',
-                                                $url_array[0])) {
+        if (count($url_array) > 0 && preg_match(
+                '/^([a-z0-9]{2,3})-([a-z0-9]{4}-?)?([a-z0-9]{2,3})?$/i',
+                $url_array[0]
+            )) {
             $this->setLocale(array_shift($url_array));
         }
         reset($url_array);
@@ -237,22 +239,16 @@ class Request
 
     /**
      * Get the IP address of the user
-     *
-     * @return string The remote IP address. If the user passes through a proxy, this will attempt to return the origin
-     * IP address.
      */
-    private function determineRemoteIP(): string
+    private function determineRemoteIP(): void
     {
-        if (null === $this->remoteIP) {
-            $ip = $_SERVER['REMOTE_ADDR'];
-            if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                $ip = explode(',', $ip);
-                $ip = trim($ip[0]);
-            }
-            $this->remoteIP = $ip;
+        $this->rawRemoteIP = $ip = $_SERVER['REMOTE_ADDR'];
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $ip = explode(',', $ip);
+            $ip = trim($ip[0]);
         }
-        return $this->remoteIP;
+        $this->remoteIP = $ip;
     }
 
 }
