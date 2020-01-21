@@ -1,16 +1,16 @@
 <?php
 
-namespace WigeDev\JasperCoreTests\Lifecycle;
+namespace JasperFW\JasperCoreTests\Lifecycle;
 
-use WigeDev\JasperCore\Exception\RenderingException;
-use WigeDev\JasperCore\Lifecycle\Response;
-use WigeDev\JasperCore\Renderer\CLIRenderer;
-use WigeDev\JasperCore\Renderer\HtmlRenderer;
-use WigeDev\JasperCore\Renderer\JsonRenderer;
-use WigeDev\JasperCore\Renderer\ViewHelper\MetaHelper;
-use WigeDev\JasperCore\Renderer\ViewHelper\StylesheetHelper;
-use WigeDev\JasperCore\Renderer\ViewHelper\TitleHelper;
-use WigeDev\JasperCore\Testing\FrameworkTestCase;
+use JasperFW\JasperCore\Exception\RenderingException;
+use JasperFW\JasperCore\Lifecycle\Response;
+use JasperFW\JasperCore\Renderer\CLIRenderer;
+use JasperFW\JasperCore\Renderer\HtmlRenderer;
+use JasperFW\JasperCore\Renderer\JsonRenderer;
+use JasperFW\JasperCore\Renderer\ViewHelper\MetaHelper;
+use JasperFW\JasperCore\Renderer\ViewHelper\StylesheetHelper;
+use JasperFW\JasperCore\Renderer\ViewHelper\TitleHelper;
+use JasperFW\JasperCore\Testing\FrameworkTestCase;
 
 class ResponseTest extends FrameworkTestCase
 {

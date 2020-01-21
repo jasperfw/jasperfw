@@ -1,5 +1,5 @@
 <?php
-namespace WigeDev\JasperCore\Exception;
+namespace JasperFW\JasperCore\Exception;
 
 use Exception;
 

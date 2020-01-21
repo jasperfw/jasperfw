@@ -1,5 +1,5 @@
 <?php
-namespace WigeDev\JasperCore\Renderer;
+namespace JasperFW\JasperCore\Renderer;
 
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -7,14 +7,14 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Extension\StringLoaderExtension;
 use Twig\Loader\FilesystemLoader;
-use WigeDev\JasperCore\Lifecycle\Response;
+use JasperFW\JasperCore\Lifecycle\Response;
 
 /**
  * Class TwigRenderer
  *
  * Renders the response as an HTML document using the Twig template engine from Symphony
  *
- * @package WigeDev\JasperCore\Renderer
+ * @package JasperFW\JasperCore\Renderer
  */
 class TwigRenderer extends Renderer
 {

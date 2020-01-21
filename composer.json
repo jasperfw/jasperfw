@@ -1,5 +1,5 @@
 {
-  "name": "wigedev/jasper-core",
+  "name": "jasperfw/jasper-core",
   "description": "A simple but powerful MVC framework developed to allow developers to get sites up and running quickly",
   "license": "Apache-2.0",
   "authors": [
@@ -21,12 +21,12 @@
   },
   "autoload": {
     "psr-4": {
-      "WigeDev\\JasperCore\\": "src/"
+      "JasperFW\\JasperCore\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "WigeDev\\JasperCoreTests\\": "tests/"
+      "JasperFW\\JasperCoreTests\\": "tests/"
     }
   }
 }

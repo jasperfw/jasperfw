@@ -1,10 +1,10 @@
 <?php
 
-namespace WigeDev\JasperCoreTests\Utility;
+namespace JasperFW\JasperCoreTests\Utility;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use WigeDev\JasperCore\Lifecycle\Response;
+use JasperFW\JasperCore\Lifecycle\Response;
 
 class ModuleControllerLoaderTest extends TestCase
 {

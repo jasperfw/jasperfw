@@ -1,8 +1,8 @@
 <?php
-namespace WigeDev\JasperCore\Renderer;
+namespace JasperFW\JasperCore\Renderer;
 
-use WigeDev\JasperCore\Jasper;
-use WigeDev\JasperCore\Lifecycle\Response;
+use JasperFW\JasperCore\Jasper;
+use JasperFW\JasperCore\Lifecycle\Response;
 
 /**
  * Class HtmlRenderer
@@ -11,7 +11,7 @@ use WigeDev\JasperCore\Lifecycle\Response;
  * TODO: Need to add the folder paths for rendering.
  * TODO: Test and finalize
  *
- * @package WigeDev\JasperCore\Renderer
+ * @package JasperFW\JasperCore\Renderer
  */
 class HtmlRenderer extends Renderer
 {

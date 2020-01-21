@@ -1,5 +1,5 @@
 <?php
-namespace WigeDev\JasperCore\Utility;
+namespace JasperFW\JasperCore\Utility;
 
 /**
  * Class HTTPUtilities

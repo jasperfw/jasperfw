@@ -1,8 +1,8 @@
 <?php
 
-namespace WigeDev\JasperCore\Lifecycle;
+namespace JasperFW\JasperCore\Lifecycle;
 
-use WigeDev\JasperCore\Jasper;
+use JasperFW\JasperCore\Jasper;
 
 /**
  * Class Request
@@ -10,7 +10,7 @@ use WigeDev\JasperCore\Jasper;
  * A request object represents the request either recieved by the application via the web server, or through the command
  * line interface.
  *
- * @package WigeDev\JasperCore\Lifecycle
+ * @package JasperFW\JasperCore\Lifecycle
  */
 class Request
 {

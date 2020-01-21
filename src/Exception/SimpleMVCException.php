@@ -1,5 +1,5 @@
 <?php
-namespace WigeDev\JasperCore\Exception;
+namespace JasperFW\JasperCore\Exception;
 
 use Exception;
 
@@ -8,7 +8,7 @@ use Exception;
  *
  * The root for all Exceptions thrown by the Framework.
  *
- * @package WigeDev\JasperCore\Exception
+ * @package JasperFW\JasperCore\Exception
  */
 class SimpleMVCException extends Exception
 {

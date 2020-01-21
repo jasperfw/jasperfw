@@ -1,8 +1,8 @@
 <?php
-namespace WigeDev\JasperCore\Renderer\ViewHelper;
+namespace JasperFW\JasperCore\Renderer\ViewHelper;
 
-use WigeDev\JasperCore\Renderer\Renderer;
-use WigeDev\JasperFarm\Utility\Collection;
+use JasperFW\JasperCore\Renderer\Renderer;
+use JasperFW\JasperFarm\Utility\Collection;
 
 /**
  * Class ViewHelperCollection
@@ -12,7 +12,7 @@ use WigeDev\JasperFarm\Utility\Collection;
  * The class implements Iterator so its children can be processed in a foreach as if this was an array. Override the
  * "next"
  *
- * @package WigeDev\JasperCore\Renderer\ViewHelper
+ * @package JasperFW\JasperCore\Renderer\ViewHelper
  */
 abstract class ViewHelperCollection extends Collection implements ViewHelperInterface
 {

@@ -1,11 +1,11 @@
 <?php
-namespace WigeDev\JasperCore\Lifecycle;
+namespace JasperFW\JasperCore\Lifecycle;
 
 use Exception;
-use WigeDev\JasperCore\Exception\RenderingException;
-use WigeDev\JasperCore\Jasper;
-use WigeDev\JasperCore\Renderer\Renderer;
-use WigeDev\JasperCore\Renderer\ViewHelper\ViewHelper;
+use JasperFW\JasperCore\Exception\RenderingException;
+use JasperFW\JasperCore\Jasper;
+use JasperFW\JasperCore\Renderer\Renderer;
+use JasperFW\JasperCore\Renderer\ViewHelper\ViewHelper;
 
 /**
  * Class Response

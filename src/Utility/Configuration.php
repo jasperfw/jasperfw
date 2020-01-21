@@ -1,9 +1,9 @@
 <?php
-namespace WigeDev\JasperCore\Utility;
+namespace JasperFW\JasperCore\Utility;
 
-use WigeDev\JasperCore\Jasper;
+use JasperFW\JasperCore\Jasper;
 
-use function WigeDev\JasperCore\J;
+use function JasperFW\JasperCore\J;
 
 /**
  * Class Configuration

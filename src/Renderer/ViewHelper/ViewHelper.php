@@ -1,8 +1,8 @@
 <?php
 
-namespace WigeDev\JasperCore\Renderer\ViewHelper;
+namespace JasperFW\JasperCore\Renderer\ViewHelper;
 
-use WigeDev\JasperCore\Lifecycle\Response;
+use JasperFW\JasperCore\Lifecycle\Response;
 
 /**
  * Class ViewHelper
@@ -10,7 +10,7 @@ use WigeDev\JasperCore\Lifecycle\Response;
  * A ViewHelper is used to inject dynamic code into a rendered view. Unlike ViewHelperCollection, a ViewHelper will
  * typically represent one or more values, and set how they are to be displayed.
  *
- * @package WigeDev\JasperCore\Renderer\ViewHelper
+ * @package JasperFW\JasperCore\Renderer\ViewHelper
  */
 abstract class ViewHelper implements ViewHelperInterface
 {

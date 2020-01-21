@@ -1,12 +1,12 @@
 <?php
-namespace WigeDev\JasperCore\Event;
+namespace JasperFW\JasperCore\Event;
 
 /**
  * Class EventHandlerCollection
  *
  * Container for event handlers.
  *
- * @package WigeDev\JasperCore\Event
+ * @package JasperFW\JasperCore\Event
  */
 class EventHandlerCollection
 {

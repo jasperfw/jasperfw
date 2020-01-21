@@ -1,10 +1,10 @@
 <?php
-namespace WigeDev\JasperCoreTests\Utility;
+namespace JasperFW\JasperCoreTests\Utility;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use WigeDev\JasperCore\Testing\FrameworkTestCase;
-use WigeDev\JasperCore\Utility\Configuration;
+use JasperFW\JasperCore\Testing\FrameworkTestCase;
+use JasperFW\JasperCore\Utility\Configuration;
 
 class ConfigurationTest extends FrameworkTestCase
 {
@@ -104,9 +104,9 @@ class ConfigurationTest extends FrameworkTestCase
         return [
             'config' => [
                 'config.php' => <<<PHP
-use WigeDev\JasperCore\Renderer\CLIRenderer;
-use WigeDev\JasperCore\Renderer\HtmlRenderer;
-use WigeDev\JasperCore\Renderer\JsonRenderer;
+use JasperFW\JasperCore\Renderer\CLIRenderer;
+use JasperFW\JasperCore\Renderer\HtmlRenderer;
+use JasperFW\JasperCore\Renderer\JsonRenderer;
 
 return array(
     'core' => array(),

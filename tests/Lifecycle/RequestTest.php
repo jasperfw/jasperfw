@@ -1,9 +1,9 @@
 <?php
 
-namespace WigeDev\JasperCoreTests\Lifecycle;
+namespace JasperFW\JasperCoreTests\Lifecycle;
 
-use WigeDev\JasperCore\Lifecycle\Request;
-use WigeDev\JasperCore\Testing\FrameworkTestCase;
+use JasperFW\JasperCore\Lifecycle\Request;
+use JasperFW\JasperCore\Testing\FrameworkTestCase;
 
 class RequestTest extends FrameworkTestCase
 {

@@ -1,9 +1,9 @@
 <?php
-namespace WigeDev\JasperCore\Renderer;
+namespace JasperFW\JasperCore\Renderer;
 
 
-use WigeDev\JasperCore\Jasper;
-use WigeDev\JasperCore\Lifecycle\Response;
+use JasperFW\JasperCore\Jasper;
+use JasperFW\JasperCore\Lifecycle\Response;
 
 class CLIRenderer extends Renderer
 {

@@ -6,10 +6,10 @@
  * Time: 11:33 PM
  */
 
-namespace WigeDev\JasperCore\Renderer\ViewHelper;
+namespace JasperFW\JasperCore\Renderer\ViewHelper;
 
 
-use WigeDev\JasperCore\Jasper;
+use JasperFW\JasperCore\Jasper;
 
 /**
  * Class TitleHelper

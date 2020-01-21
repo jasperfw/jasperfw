@@ -1,24 +1,24 @@
 <?php
-namespace WigeDev\JasperCore;
+namespace JasperFW\JasperCore;
 
 use Exception;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use WigeDev\JasperCore\Event\EventHandler;
-use WigeDev\JasperCore\Event\EventHandlerCollection;
-use WigeDev\JasperCore\Lifecycle\Request;
-use WigeDev\JasperCore\Lifecycle\Response;
-use WigeDev\JasperCore\Lifecycle\Router;
-use WigeDev\JasperCore\Utility\Configuration;
-use WigeDev\JasperCore\Utility\ModuleControllerLoader;
+use JasperFW\JasperCore\Event\EventHandler;
+use JasperFW\JasperCore\Event\EventHandlerCollection;
+use JasperFW\JasperCore\Lifecycle\Request;
+use JasperFW\JasperCore\Lifecycle\Response;
+use JasperFW\JasperCore\Lifecycle\Router;
+use JasperFW\JasperCore\Utility\Configuration;
+use JasperFW\JasperCore\Utility\ModuleControllerLoader;
 
 /**
  * Class Jasper
  *
  * The entry point for the framework, Jasper sets up the main functionality.
  *
- * @package WigeDev\JasperCore
+ * @package JasperFW\JasperCore
  *
  * @property string                 locale       The ISO locale string, typically set in the URI
  * @property int                    http_status  The status code for the http request.

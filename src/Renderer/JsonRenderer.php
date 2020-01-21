@@ -1,7 +1,7 @@
 <?php
-namespace WigeDev\JasperCore\Renderer;
+namespace JasperFW\JasperCore\Renderer;
 
-use WigeDev\JasperCore\Lifecycle\Response;
+use JasperFW\JasperCore\Lifecycle\Response;
 
 class JsonRenderer extends Renderer
 {

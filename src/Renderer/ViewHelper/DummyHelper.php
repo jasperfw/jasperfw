@@ -1,5 +1,5 @@
 <?php
-namespace WigeDev\JasperCore\Renderer\ViewHelper;
+namespace JasperFW\JasperCore\Renderer\ViewHelper;
 
 /**
  * Class DummyHelper
@@ -9,7 +9,7 @@ namespace WigeDev\JasperCore\Renderer\ViewHelper;
  * navigation bar, so there is no reason to load that into memory. However, calls to that ViewHelper should not generate
  * error messages. This way, it is not necessary to check which ViewHelpers exists at a given point in the execution.
  *
- * @package WigeDev\JasperCore\Renderer\ViewHelper
+ * @package JasperFW\JasperCore\Renderer\ViewHelper
  */
 class DummyHelper extends ViewHelper
 {

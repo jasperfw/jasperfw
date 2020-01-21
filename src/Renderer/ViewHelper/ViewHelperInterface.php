@@ -1,6 +1,6 @@
 <?php
 
-namespace WigeDev\JasperCore\Renderer\ViewHelper;
+namespace JasperFW\JasperCore\Renderer\ViewHelper;
 
 
 interface ViewHelperInterface

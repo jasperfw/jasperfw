@@ -6,7 +6,7 @@
  * Time: 8:08 PM
  */
 
-namespace WigeDev\JasperCore\Renderer\ViewHelper;
+namespace JasperFW\JasperCore\Renderer\ViewHelper;
 
 
 class MetaHelper extends ViewHelperCollection

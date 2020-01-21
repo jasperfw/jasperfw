@@ -1,10 +1,10 @@
 <?php
 
-namespace WigeDev\JasperCoreTests\Event;
+namespace JasperFW\JasperCoreTests\Event;
 
 use PHPUnit\Framework\TestCase;
-use WigeDev\JasperCore\Event\EventHandler;
-use WigeDev\JasperCore\Event\EventHandlerCollection;
+use JasperFW\JasperCore\Event\EventHandler;
+use JasperFW\JasperCore\Event\EventHandlerCollection;
 
 class EventHandlerCollectionTest extends TestCase
 {

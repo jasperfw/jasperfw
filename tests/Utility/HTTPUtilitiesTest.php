@@ -1,9 +1,9 @@
 <?php
 
-namespace WigeDev\JasperCoreTests\Utility;
+namespace JasperFW\JasperCoreTests\Utility;
 
 use PHPUnit\Framework\TestCase;
-use WigeDev\JasperCore\Utility\HTTPUtilities;
+use JasperFW\JasperCore\Utility\HTTPUtilities;
 
 class HTTPUtilitiesTest extends TestCase
 {
