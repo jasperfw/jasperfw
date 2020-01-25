@@ -1,27 +1,32 @@
 <?php
 namespace JasperFW\JasperCoreTests\Utility;
 
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
 use JasperFW\JasperCore\Testing\FrameworkTestCase;
 use JasperFW\JasperCore\Utility\Configuration;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 
+/**
+ * Class ConfigurationTest
+ *
+ * So... most of these tests don't work as expected. This seems to be an issue with vfsStream mocking a file that is
+ * include()ed. This needs some additional research before the tests for this class can be completed.
+ *
+ * @package JasperFW\JasperCoreTests\Utility
+ */
 class ConfigurationTest extends FrameworkTestCase
 {
-    /**
-     * @var vfsStreamDirectory The virtual file system containing the config file to test
-     */
+    /** @var vfsStreamDirectory The virtual file system containing the config file to test */
     protected $fileSystem;
-    /**
-     * @var string The path to the config file
-     */
+    /** @var string The path to the config file */
     protected $url;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->fileSystem = vfsStream::setup('root', null, $this->generateConfigDirectory());
-        $this->url = vfsStream::url('config/config.php');
+        $this->fileSystem = vfsStream::setup('root');
+        $this->url = vfsStream::url('root/config.php');
+        file_put_contents($this->url, $this->generateConfigFile());
     }
 
     public function testGivenFolderParsesAllFilesWithin()
@@ -48,7 +53,7 @@ class ConfigurationTest extends FrameworkTestCase
     public function testGivenFileThatIsValidProcessConfigurationAndReturnTrue()
     {
         $sut = new Configuration([]);
-        $this->assertTrue($sut->parseFile(vfsStream::url('config/config.php')));
+        $this->assertTrue($sut->parseFile($this->url));
     }
 
     public function testGivenArrayMergesWithExistingArray()
@@ -97,13 +102,11 @@ class ConfigurationTest extends FrameworkTestCase
 
     /**
      * Create a mock file system containing a config file
-     * @return array
+     * @return string
      */
-    protected function generateConfigDirectory(): array
+    protected function generateConfigFile(): string
     {
-        return [
-            'config' => [
-                'config.php' => <<<PHP
+        return <<<PHP
 use JasperFW\JasperCore\Renderer\CLIRenderer;
 use JasperFW\JasperCore\Renderer\HtmlRenderer;
 use JasperFW\JasperCore\Renderer\JsonRenderer;
@@ -162,10 +165,6 @@ return array(
         ),
     ),
 );
-PHP
-                ,
-
-            ],
-        ];
+PHP;
     }
 }

@@ -3,7 +3,6 @@
 namespace JasperFW\JasperCore\Renderer;
 
 use Exception;
-use JasperFW\JasperCore\Jasper;
 use JasperFW\JasperCore\Lifecycle\Response;
 
 use function JasperFW\JasperCore\J;
@@ -50,17 +49,7 @@ abstract class Renderer
      */
     public function generateStaticURL(string $url, bool $addLocale = false): string
     {
-        $url = ltrim($url, '/');
-        // If a locale was specified, add that to the beginning of the url
-        if (Jasper::i()->locale_set) {
-            $url = $this->getLinkLocale(Jasper::i()->locale) . '/' . $url;
-        }
-        // If a base folder is set, add it.
-        $base = Jasper::i()->config->getConfiguration('framework')['base'] ?? null;
-        if ($base !== null) {
-            $url = $base . '/' . $url;
-        }
-        return '/' . $url;
+        return J()->response->generateStaticURL($url, $addLocale);
     }
 
     /**
@@ -74,46 +63,7 @@ abstract class Renderer
      */
     public function generateURL($route_name, $variables = []): string
     {
-        // Make sure the route configuration has been loaded
-        if (!isset($this->routes)) {
-            $this->routes = Jasper::i()->config->getConfiguration('routes');
-        }
-        // Make sure the named route exists, otherwise return an empty string
-        if (!isset($this->routes[$route_name])) {
-            J()->log()->warning('The specified route, ' . $route_name . ', was not defined.');
-            return '';
-        }
-        // Merge the default values and the passed variables into an array
-        $variables = array_merge($this->routes[$route_name]['defaults'], $variables);
-        $query_string = [];
-        $url = str_replace('[', '', $this->routes[$route_name]['route']);
-        $url = str_replace(']', '', $url);
-        foreach ($variables as $key => $value) {
-            if (false !== strpos($url, ':' . $key . ':')) {
-                // The variable is in the url, replace it
-                $url = str_replace(':' . $key . ':', $value, $url);
-            } elseif ($key != 'controller' && $key != 'action' && $key != 'module') {
-                // The variable is not in the url, add it to the query string as long as it is not the controller or action
-                $query_string[] = urlencode($key) . '=' . urlencode($value);
-            }
-        }
-        // If there is a trailing '/index' remove it. There can be up to three (module, controller, action)
-        $url = preg_replace('|(/index){1,3}$|', '', $url);
-        // Add the query string
-        if (count($query_string) > 0) {
-            $url .= '?' . implode('&', $query_string);
-        }
-        $url = ltrim($url, '/');
-        // If a locale was specified, add that to the beginning of the url
-        if (Jasper::i()->locale_set) {
-            $url = $this->getLinkLocale(Jasper::i()->locale) . '/' . $url;
-        }
-        // If a base folder is set, add it.
-        $base = Jasper::i()->config->getConfiguration('framework')['base'] ?? null;
-        if ($base !== null) {
-            $url = $base . '/' . $url;
-        }
-        return '/' . $url;
+        return J()->response->generateURL($route_name, $variables);
     }
 
     /**
@@ -128,9 +78,7 @@ abstract class Renderer
      */
     public function createLink($path, $include_locale = false)
     {
-        $protocol = (Jasper::i()->request->isSecure()) ? 'https:' : 'http:';
-        $base = $this->getBaseURL($include_locale);
-        return $protocol . $base . $path;
+        return J()->response->createLink($path, $include_locale);
     }
 
     /**
@@ -145,18 +93,6 @@ abstract class Renderer
      */
     public function getBaseURL($include_locale = true)
     {
-        $base = '//' . $_SERVER['HTTP_HOST'] . str_replace('index.php', '', $_SERVER['URL']);
-        if ($include_locale && Jasper::i()->locale_set) {
-            $base .= $this->getLinkLocale(Jasper::i()->locale) . '/';
-        }
-        return $base;
-    }
-
-    private function getLinkLocale($locale)
-    {
-        if (false === strpos($locale, "-")) {
-            return $locale . "-";
-        }
-        return $locale;
+        return J()->response->getBaseURL($include_locale);
     }
 }

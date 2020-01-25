@@ -13,8 +13,8 @@ class JsonRenderer extends Renderer
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
         header('Content-type: application/json; charset=utf-8');
         // Assemble the values and output
-        $variables = $response->getVariables();
-        $variables['success'] = $response->getStatusCode();
+        $variables['data'] = $response->getData();
+        $variables['success'] = ($response->getStatusCode() === 200) ? 'OK' : 'Failure - ' . $response->getStatusCode();
         $variables['messages'] = $response->getMessages();
         $page_content = json_encode($variables, JSON_UNESCAPED_UNICODE);
         echo $page_content;
