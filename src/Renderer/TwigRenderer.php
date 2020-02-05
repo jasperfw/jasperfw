@@ -1,20 +1,20 @@
 <?php
-namespace JasperFW\JasperCore\Renderer;
+namespace JasperFW\JasperFW\Renderer;
 
+use JasperFW\JasperFW\Lifecycle\Response;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Extension\StringLoaderExtension;
 use Twig\Loader\FilesystemLoader;
-use JasperFW\JasperCore\Lifecycle\Response;
 
 /**
  * Class TwigRenderer
  *
  * Renders the response as an HTML document using the Twig template engine from Symphony
  *
- * @package JasperFW\JasperCore\Renderer
+ * @package JasperFW\JasperFW\Renderer
  */
 class TwigRenderer extends Renderer
 {

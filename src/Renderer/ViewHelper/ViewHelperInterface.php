@@ -1,7 +1,6 @@
 <?php
 
-namespace JasperFW\JasperCore\Renderer\ViewHelper;
-
+namespace JasperFW\JasperFW\Renderer\ViewHelper;
 
 interface ViewHelperInterface
 {

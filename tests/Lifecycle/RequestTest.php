@@ -1,9 +1,9 @@
 <?php
 
-namespace JasperFW\JasperCoreTests\Lifecycle;
+namespace JasperFW\JasperFWTests\Lifecycle;
 
-use JasperFW\JasperCore\Lifecycle\Request;
-use JasperFW\JasperCore\Testing\FrameworkTestCase;
+use JasperFW\JasperFW\Lifecycle\Request;
+use JasperFW\JasperFW\Testing\FrameworkTestCase;
 
 class RequestTest extends FrameworkTestCase
 {

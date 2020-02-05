@@ -1,9 +1,9 @@
 <?php
 
-namespace JasperFW\JasperCoreTests\Event;
+namespace JasperFW\JasperFWTests\Event;
 
+use JasperFW\JasperFW\Event\EventHandler;
 use PHPUnit\Framework\TestCase;
-use JasperFW\JasperCore\Event\EventHandler;
 
 class EventHandlerTest extends TestCase
 {

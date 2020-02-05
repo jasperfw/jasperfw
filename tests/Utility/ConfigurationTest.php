@@ -1,8 +1,8 @@
 <?php
-namespace JasperFW\JasperCoreTests\Utility;
+namespace JasperFW\JasperFWTests\Utility;
 
-use JasperFW\JasperCore\Testing\FrameworkTestCase;
-use JasperFW\JasperCore\Utility\Configuration;
+use JasperFW\JasperFW\Testing\FrameworkTestCase;
+use JasperFW\JasperFW\Utility\Configuration;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 
@@ -12,7 +12,7 @@ use org\bovigo\vfs\vfsStreamDirectory;
  * So... most of these tests don't work as expected. This seems to be an issue with vfsStream mocking a file that is
  * include()ed. This needs some additional research before the tests for this class can be completed.
  *
- * @package JasperFW\JasperCoreTests\Utility
+ * @package JasperFW\JasperFWTests\Utility
  */
 class ConfigurationTest extends FrameworkTestCase
 {
@@ -107,9 +107,9 @@ class ConfigurationTest extends FrameworkTestCase
     protected function generateConfigFile(): string
     {
         return <<<PHP
-use JasperFW\JasperCore\Renderer\CLIRenderer;
-use JasperFW\JasperCore\Renderer\HtmlRenderer;
-use JasperFW\JasperCore\Renderer\JsonRenderer;
+use JasperFW\JasperFW\Renderer\CLIRenderer;
+use JasperFW\JasperFW\Renderer\HtmlRenderer;
+use JasperFW\JasperFW\Renderer\JsonRenderer;
 
 return array(
     'core' => array(),
@@ -119,7 +119,7 @@ return array(
     'view' => array(
         'default_country' => 'us',
         'default_lang' => 'en-us',
-        'default_view_type' => 'html',
+        'defaultViewType' => 'html',
         'default_layout' => 'layout/_layout.phtml',
         'renderers' => array(
             'cli' => array( // Handler for requests from the command line

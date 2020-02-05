@@ -1,16 +1,15 @@
 <?php
 
-namespace JasperFW\JasperCoreTests\Lifecycle;
+namespace JasperFW\JasperFWTests\Lifecycle;
 
-use JasperFW\JasperCore\Exception\RenderingException;
-use JasperFW\JasperCore\Lifecycle\Response;
-use JasperFW\JasperCore\Renderer\CLIRenderer;
-use JasperFW\JasperCore\Renderer\HtmlRenderer;
-use JasperFW\JasperCore\Renderer\JsonRenderer;
-use JasperFW\JasperCore\Renderer\ViewHelper\MetaHelper;
-use JasperFW\JasperCore\Renderer\ViewHelper\StylesheetHelper;
-use JasperFW\JasperCore\Renderer\ViewHelper\TitleHelper;
-use JasperFW\JasperCore\Testing\FrameworkTestCase;
+use JasperFW\JasperFW\Lifecycle\Response;
+use JasperFW\JasperFW\Renderer\CLIRenderer;
+use JasperFW\JasperFW\Renderer\HtmlRenderer;
+use JasperFW\JasperFW\Renderer\JsonRenderer;
+use JasperFW\JasperFW\Renderer\ViewHelper\MetaHelper;
+use JasperFW\JasperFW\Renderer\ViewHelper\StylesheetHelper;
+use JasperFW\JasperFW\Renderer\ViewHelper\TitleHelper;
+use JasperFW\JasperFW\Testing\FrameworkTestCase;
 
 class ResponseTest extends FrameworkTestCase
 {
@@ -111,31 +110,22 @@ class ResponseTest extends FrameworkTestCase
         $this->assertEquals('index', $sut->getViewFile());
     }
 
-    /**
-     * @throws RenderingException
-     */
     public function testRendererWithValidViewType()
     {
         $this->confConfigWithArray();
         $sut = new Response();
         $sut->setViewType('json');
-        $this->assertInstanceOf(JsonRenderer::class, $sut->getRenderer());
+        $this->assertEquals('json', $sut->getViewType());
     }
 
-    /**
-     * @throws RenderingException
-     */
     public function testRendererWithNoExtension()
     {
         $this->confConfigWithArray();
         $sut = new Response();
         $sut->setViewType('');
-        $this->assertInstanceOf(HtmlRenderer::class, $sut->getRenderer());
+        $this->assertEquals('html', $sut->getViewType());
     }
 
-    /**
-     * @throws RenderingException
-     */
     public function testRendererWithDefaultViewType()
     {
         $array = $this->getRenderersArray();
@@ -143,7 +133,7 @@ class ResponseTest extends FrameworkTestCase
         $this->confConfigWithArray($array);
         $sut = new Response();
         $sut->setViewType('');
-        $this->assertInstanceOf(HtmlRenderer::class, $sut->getRenderer());
+        $this->assertEquals('html', $sut->getViewType());
     }
 
     public function testRendererNoMatchThrowsException()
@@ -182,7 +172,7 @@ class ResponseTest extends FrameworkTestCase
         return [
             'default_country' => 'us',
             'default_lang' => 'en-us',
-            'default_view_type' => 'html',
+            'defaultViewType' => 'html',
             'default_layout_path' => 'layout',
             'default_layout_file' => '_default',
             'renderers' => [

@@ -6,10 +6,10 @@
  * Time: 11:56 PM
  */
 
-namespace JasperFW\JasperCore\Renderer\ViewHelper;
+namespace JasperFW\JasperFW\Renderer\ViewHelper;
 
 use Exception;
-use JasperFW\JasperCore\Jasper;
+use JasperFW\JasperFW\Jasper;
 
 /**
  * Class StyleSheetHelper

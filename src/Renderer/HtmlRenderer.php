@@ -1,8 +1,8 @@
 <?php
-namespace JasperFW\JasperCore\Renderer;
+namespace JasperFW\JasperFW\Renderer;
 
-use JasperFW\JasperCore\Jasper;
-use JasperFW\JasperCore\Lifecycle\Response;
+use JasperFW\JasperFW\Jasper;
+use JasperFW\JasperFW\Lifecycle\Response;
 
 /**
  * Class HtmlRenderer
@@ -11,7 +11,7 @@ use JasperFW\JasperCore\Lifecycle\Response;
  * TODO: Need to add the folder paths for rendering.
  * TODO: Test and finalize
  *
- * @package JasperFW\JasperCore\Renderer
+ * @package JasperFW\JasperFW\Renderer
  */
 class HtmlRenderer extends Renderer
 {
@@ -21,15 +21,16 @@ class HtmlRenderer extends Renderer
     public function render(Response $response): void
     {
         parent::render($response);
+        $pageContent = '';
         // Include the view
         Jasper::i()->log->debug('Trying to load view ' . $response->getViewPath() . $response->getViewFile());
         if (file_exists($response->getViewPath() . DS . $response->getViewFile() . '.phtml')) {
             ob_start();
             include($response->getViewPath() . DS . $response->getViewFile() . ".phtml");
-            $page_content = ob_get_contents();
+            $pageContent = ob_get_contents();
             ob_end_clean();
         } else {
-            Jasper::i()->log->info(
+            Jasper::i()->log->warning(
                 'Did not find the view file. ' . $response->getViewPath() . $response->getViewFile()
             );
         }
@@ -40,28 +41,12 @@ class HtmlRenderer extends Renderer
         if (file_exists($response->getLayoutPath() . DS . $response->getLayoutFile() . ".phtml")) {
             ob_start();
             include($response->getLayoutPath() . DS . $response->getLayoutFile() . ".phtml");
-            $page_content = ob_get_contents();
+            $pageContent = ob_get_contents();
             ob_end_clean();
         } else {
             Jasper::i()->log->warning('Did not find the layout file.');
         }
-        echo $page_content;
+        echo $pageContent;
         // For the dev environment, output debug info
-        if ($_SESSION['debug'] === true) {
-            echo '<hr />Debug Info <ul style="background-color: #ffffff; text-align: left;">';
-            foreach (Jasper::i()->log->getEvents() as $event) {
-                $log_color = '#FF0400';
-                if (strpos($event, 'Debug: ') > 0) {
-                    $log_color = '#aaaaaa';
-                } elseif (strpos($event, 'Info: ') > 0) {
-                    $log_color = '#000000';
-                } elseif (strpos($event, 'Notice: ') > 0) {
-                    $log_color = '#A00400';
-                }
-                echo "<li style=\"color: {$log_color}\">$event</li>";
-            }
-            echo '</ul>';
-            //$this->config->debugShowConfig();
-        }
     }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "jasperfw/jasper-core",
+  "name": "jasperfw/jasperfw",
   "description": "A simple but powerful MVC framework developed to allow developers to get sites up and running quickly",
   "license": "Apache-2.0",
   "authors": [
@@ -12,21 +12,23 @@
     "ext-json": "*",
     "php": ">=7.2",
     "psr/container": "1.0.*",
-    "psr/log": "1.0.*",
-    "twig/twig": "^3.0"
+    "psr/log": "1.0.*"
   },
   "require-dev": {
     "phpunit/phpunit": "~8.0",
     "mikey179/vfsstream": "1.6.8"
   },
+  "suggest": {
+    "twig/twig": "If you will be using the TWIG template engine (^3.0)"
+  },
   "autoload": {
     "psr-4": {
-      "JasperFW\\JasperCore\\": "src/"
+      "JasperFW\\JasperFW\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "JasperFW\\JasperCoreTests\\": "tests/"
+      "JasperFW\\JasperFWTests\\": "tests/"
     }
   }
 }

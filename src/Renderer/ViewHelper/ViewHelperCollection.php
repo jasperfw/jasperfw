@@ -1,8 +1,8 @@
 <?php
-namespace JasperFW\JasperCore\Renderer\ViewHelper;
+namespace JasperFW\JasperFW\Renderer\ViewHelper;
 
-use JasperFW\JasperCore\Renderer\Renderer;
 use JasperFW\JasperFarm\Utility\Collection;
+use JasperFW\JasperFW\Renderer\Renderer;
 
 /**
  * Class ViewHelperCollection
@@ -12,7 +12,7 @@ use JasperFW\JasperFarm\Utility\Collection;
  * The class implements Iterator so its children can be processed in a foreach as if this was an array. Override the
  * "next"
  *
- * @package JasperFW\JasperCore\Renderer\ViewHelper
+ * @package JasperFW\JasperFW\Renderer\ViewHelper
  */
 abstract class ViewHelperCollection extends Collection implements ViewHelperInterface
 {

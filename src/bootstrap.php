@@ -3,7 +3,7 @@
  * Set up the environment so that the Framework can be loaded and executed. This file is required in by Jasper::_init.
  */
 
-use JasperFW\JasperCore\Jasper;
+use JasperFW\JasperFW\Jasper;
 
 // FUTURE: Enable the session handler
 //require_once('SessionHandler.php');

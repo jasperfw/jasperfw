@@ -1,9 +1,9 @@
 <?php
-namespace JasperFW\JasperCore\Utility;
+namespace JasperFW\JasperFW\Utility;
 
 /**
  * Class HTTPUtilities
- * 
+ *
  * This class provides some common utilities related to the HTTP protocol, such as figuring out filenames. These
  * functions are all static, stateless, and have no dependencies. They should work the same in any context.
  */

@@ -1,12 +1,12 @@
 <?php
 
-namespace JasperFW\JasperCoreTests\Lifecycle;
+namespace JasperFW\JasperFWTests\Lifecycle;
 
 use Exception;
-use JasperFW\JasperCore\Lifecycle\Request;
-use JasperFW\JasperCore\Lifecycle\Response;
-use JasperFW\JasperCore\Lifecycle\Router;
-use JasperFW\JasperCore\Testing\FrameworkTestCase;
+use JasperFW\JasperFW\Lifecycle\Request;
+use JasperFW\JasperFW\Lifecycle\Response;
+use JasperFW\JasperFW\Lifecycle\Router;
+use JasperFW\JasperFW\Testing\FrameworkTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class RouterTest extends FrameworkTestCase

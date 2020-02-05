@@ -1,12 +1,12 @@
 <?php
 
-namespace JasperFW\JasperCore\Testing;
+namespace JasperFW\JasperFW\Testing;
 
+use JasperFW\JasperFW\Jasper;
+use JasperFW\JasperFW\Utility\Configuration;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
-use JasperFW\JasperCore\Jasper;
-use JasperFW\JasperCore\Utility\Configuration;
 
 /**
  * Class FrameworkTestCase
@@ -15,7 +15,7 @@ use JasperFW\JasperCore\Utility\Configuration;
  * can be extended easily to unit test functionality that leverages framework utilities. For example, J()->c is a magic
  * method that returns the dependency injection container. If you use a dependency injection container in your
  * application, overload the mockGet() method to return the continer when the argument is "c".
- * @package JasperFW\JasperCore\Testing
+ * @package JasperFW\JasperFW\Testing
  */
 class FrameworkTestCase extends TestCase
 {

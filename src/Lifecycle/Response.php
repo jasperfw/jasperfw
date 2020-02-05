@@ -1,13 +1,13 @@
 <?php
-namespace JasperFW\JasperCore\Lifecycle;
+namespace JasperFW\JasperFW\Lifecycle;
 
 use Exception;
-use JasperFW\JasperCore\Exception\RenderingException;
-use JasperFW\JasperCore\Jasper;
-use JasperFW\JasperCore\Renderer\Renderer;
-use JasperFW\JasperCore\Renderer\ViewHelper\ViewHelper;
+use JasperFW\JasperFW\Exception\RenderingException;
+use JasperFW\JasperFW\Jasper;
+use JasperFW\JasperFW\Renderer\Renderer;
+use JasperFW\JasperFW\Renderer\ViewHelper\ViewHelper;
 
-use function JasperFW\JasperCore\J;
+use function JasperFW\JasperFW\J;
 
 /**
  * Class Response
@@ -18,7 +18,7 @@ use function JasperFW\JasperCore\J;
 class Response
 {
     /** @var int The HTTP status code */
-    protected $status_code = 200;
+    protected $statusCode = 200;
     /** @var Renderer The renderer that will be managing the output */
     protected $renderer;
     /** @var array The variables passed as part of the request */
@@ -30,9 +30,9 @@ class Response
     /** @var mixed The data payload of the response - typically an array */
     protected $data;
     /** @var string The default renderer type */
-    protected $default_view_type;
+    protected $defaultViewType;
     /** @var string The renderer type */
-    protected $view_type;
+    protected $viewType;
     /** @var string the Module the router has routed to */
     protected $module;
     /** @var string The Controller the router has routed to */
@@ -40,19 +40,19 @@ class Response
     /** @var string The Action the router has routed to */
     protected $action;
     /** @var string The path to the layout file */
-    protected $layout_path;
+    protected $layoutPath;
     /** @var string The name of the layout file */
-    protected $layout_file;
+    protected $layoutFile;
     /** @var string The path to the view file */
-    protected $view_path;
+    protected $viewPath;
     /** @var string The filename of the view file */
-    protected $view_file;
+    protected $viewFile;
     /** @var ViewHelper[] The view helpers */
     //protected $view_helpers;
     /** @var array List of renderers and their settings */
     protected $renderers;
     /** @var array Mapping of file extensions to renderer names. * is default */
-    protected $extension_map;
+    protected $extensionMap;
 
     /**
      * Response constructor.
@@ -185,11 +185,11 @@ class Response
     /**
      * Set the status code to return with the request
      *
-     * @param int $status_code The HTTP status code to send with the request
+     * @param int $statusCode The HTTP status code to send with the request
      */
-    public function setStatusCode(int $status_code): void
+    public function setStatusCode(int $statusCode): void
     {
-        $this->status_code = $status_code;
+        $this->statusCode = $statusCode;
     }
 
     /**
@@ -199,7 +199,7 @@ class Response
      */
     public function getStatusCode(): int
     {
-        return $this->status_code;
+        return $this->statusCode;
     }
 
 //    public function registerViewHelper(string $name, ViewHelper $viewHelper)
@@ -302,7 +302,7 @@ class Response
      */
     public function setViewType(string $viewType): void
     {
-        $this->view_type = $viewType;
+        $this->viewType = $viewType;
     }
 
     /**
@@ -311,7 +311,7 @@ class Response
      */
     public function getViewType(): string
     {
-        return $this->view_type;
+        return $this->viewType;
     }
 
     /**
@@ -321,14 +321,14 @@ class Response
      */
     protected function getRenderer(): Renderer
     {
-        if (isset($this->extension_map[$this->view_type])) {
-            $renderClass = $this->renderers[$this->extension_map[$this->view_type]]['handler'];
-        } elseif (isset($this->extension_map['*'])) {
-            $renderClass = $this->renderers[$this->extension_map['*']]['handler'];
-        } elseif (isset($this->extension_map[$this->default_view_type])) {
-            $renderClass = $this->renderers[$this->extension_map[$this->default_view_type]]['handler'];
+        if (isset($this->extensionMap[$this->viewType])) {
+            $renderClass = $this->renderers[$this->extensionMap[$this->viewType]]['handler'];
+        } elseif (isset($this->extensionMap['*'])) {
+            $renderClass = $this->renderers[$this->extensionMap['*']]['handler'];
+        } elseif (isset($this->extensionMap[$this->defaultViewType])) {
+            $renderClass = $this->renderers[$this->extensionMap[$this->defaultViewType]]['handler'];
         } else {
-            throw new RenderingException('No renderer found for ' . $this->view_type . ' files');
+            throw new RenderingException('No renderer found for ' . $this->viewType . ' files');
         }
         try {
             return new $renderClass();
@@ -354,12 +354,12 @@ class Response
         foreach ($config as $key => $configuration) {
             if ($key === 'renderers') {
                 $this->renderers = $configuration;
-            } elseif ($key === 'default_view_type') {
-                $this->default_view_type = $configuration;
+            } elseif ($key === 'defaultViewType') {
+                $this->defaultViewType = $configuration;
             } elseif ($key === 'default_layout_path') {
-                $this->layout_path = $configuration;
+                $this->layoutPath = $configuration;
             } elseif ($key === 'default_layout_file') {
-                $this->layout_file = $configuration;
+                $this->layoutFile = $configuration;
             } else {
                 $this->__set($key, $configuration);
             }
@@ -372,31 +372,31 @@ class Response
      */
     protected function generateExtensionMap(): void
     {
-        $this->extension_map = [];
+        $this->extensionMap = [];
         foreach ($this->renderers as $name => $renderer) {
             foreach ($renderer['extensions'] as $extension) {
-                $this->extension_map[$extension] = $name;
+                $this->extensionMap[$extension] = $name;
             }
         }
     }
 
     public function getLayoutPath(): string
     {
-        return $this->layout_path;
+        return $this->layoutPath;
     }
 
     public function getLayoutFile(): string
     {
-        if (isset($this->layout_file)) {
-            return $this->layout_file;
+        if (isset($this->layoutFile)) {
+            return $this->layoutFile;
         } else {
             return '_default';
         }
     }
 
-    public function setLayoutFile(string $layout_file): void
+    public function setLayoutFile(string $layoutFile): void
     {
-        $this->layout_file = $layout_file;
+        $this->layoutFile = $layoutFile;
     }
 
     /**
@@ -405,20 +405,21 @@ class Response
      */
     public function getViewPath(): string
     {
-        if ($this->view_path === null) {
+        if ($this->viewPath === null) {
             return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getModule(
                 ) . DS . 'View' . DS . $this->getController();
         }
-        return $this->view_path;
+        return $this->viewPath;
     }
 
     /**
      * The name of the view file to be used in rendering
-     * @param string $view_file The filename
+     *
+     * @param string $viewFile The filename
      */
-    public function setViewFile(string $view_file): void
+    public function setViewFile(string $viewFile): void
     {
-        $this->view_file = $view_file;
+        $this->viewFile = $viewFile;
     }
 
     /**
@@ -427,20 +428,20 @@ class Response
      */
     public function getViewFile(): string
     {
-        if (null === $this->view_file) {
+        if (null === $this->viewFile) {
             return $this->action;
         }
-        return $this->view_file;
+        return $this->viewFile;
     }
 
     public function setLayoutPath(string $newPath): void
     {
-        $this->layout_path = $newPath;
+        $this->layoutPath = $newPath;
     }
 
     public function setViewPath(string $newPath): void
     {
-        $this->view_path = $newPath;
+        $this->viewPath = $newPath;
     }
 
     /**
@@ -449,16 +450,16 @@ class Response
      * the "base" URL of the site/application to the URL, as well as the locale string if $addLocale is true.
      *
      * @param string $url       The static internal URL that may need to be modified
-     * @param bool   $addLocale True if the local string should be added
+     * @param bool   $addLocale True if the locale string should be added
      *
      * @return string The new URL
      */
-    public function generateStaticURL(string $url, bool $addLocale = false): string
+    public function generateStaticURL(string $url, bool $addLocale = true): string
     {
         $url = ltrim($url, '/');
         // If a locale was specified, add that to the beginning of the url
-        if (J()->locale_set) {
-            $url = $this->getLinkLocale(Jasper::i()->locale) . '/' . $url;
+        if ($addLocale && J()->request->getLocale() != null) {
+            $url = $this->getLinkLocale(J()->request->getLocale()) . '/' . $url;
         }
         // If a base folder is set, add it.
         $base = J()->config->getConfiguration('framework')['base'] ?? null;
@@ -485,7 +486,7 @@ class Response
         }
         // Make sure the named route exists, otherwise return an empty string
         if (!isset($this->routes[$route_name])) {
-            J()->log()->warning('The specified route, ' . $route_name . ', was not defined.');
+            J()->log->warning('The specified route, ' . $route_name . ', was not defined.');
             return '';
         }
         // Merge the default values and the passed variables into an array
@@ -510,8 +511,8 @@ class Response
         }
         $url = ltrim($url, '/');
         // If a locale was specified, add that to the beginning of the url
-        if (Jasper::i()->locale_set) {
-            $url = $this->getLinkLocale(J()->locale) . '/' . $url;
+        if (J()->request->getLocale() !== null) {
+            $url = $this->getLinkLocale(J()->request->getLocale()) . '/' . $url;
         }
         // If a base folder is set, add it.
         $base = Jasper::i()->config->getConfiguration('framework')['base'] ?? null;
@@ -551,8 +552,8 @@ class Response
     public function getBaseURL($include_locale = true)
     {
         $base = '//' . $_SERVER['HTTP_HOST'] . str_replace('index.php', '', $_SERVER['URL']);
-        if ($include_locale && J()->locale_set) {
-            $base .= $this->getLinkLocale(J()->locale) . '/';
+        if ($include_locale && J()->request->getLocale() !== null) {
+            $base .= $this->getLinkLocale(J()->request->getLocale()) . '/';
         }
         return $base;
     }

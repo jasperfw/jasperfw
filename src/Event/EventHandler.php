@@ -1,5 +1,5 @@
 <?php
-namespace JasperFW\JasperCore\Event;
+namespace JasperFW\JasperFW\Event;
 
 /**
  * Class EventHandler
@@ -13,7 +13,7 @@ namespace JasperFW\JasperCore\Event;
  * A callback consists of an object or class and a method to call on said object/method. Optionally, additional
  * arguments can be specified which will be passed through to the specified function.
  *
- * @package JasperFW\JasperCore\Event
+ * @package JasperFW\JasperFW\Event
  */
 class EventHandler
 {

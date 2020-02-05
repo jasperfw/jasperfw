@@ -1,11 +1,11 @@
 <?php
 
-namespace JasperFW\JasperCore\Renderer;
+namespace JasperFW\JasperFW\Renderer;
 
 use Exception;
-use JasperFW\JasperCore\Lifecycle\Response;
+use JasperFW\JasperFW\Lifecycle\Response;
 
-use function JasperFW\JasperCore\J;
+use function JasperFW\JasperFW\J;
 
 /**
  * Class Renderer
@@ -13,7 +13,7 @@ use function JasperFW\JasperCore\J;
  * Different renderers handle different types of requests, displaying output in a variety of ways. For example, the HTML
  * renderer will output the data as specified in a view. The JSON renderer will output the data in a JSON format.
  *
- * @package JasperFW\JasperCore\Renderer
+ * @package JasperFW\JasperFW\Renderer
  */
 abstract class Renderer
 {

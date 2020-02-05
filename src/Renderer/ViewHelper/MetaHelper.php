@@ -6,13 +6,13 @@
  * Time: 8:08 PM
  */
 
-namespace JasperFW\JasperCore\Renderer\ViewHelper;
-
+namespace JasperFW\JasperFW\Renderer\ViewHelper;
 
 class MetaHelper extends ViewHelperCollection
 {
     /**
      * Add a meta tag to the beginning of the collection. Accepts two arguments, the
+     *
      * @param string ... The name
      * @param string ... The content
      */
@@ -53,7 +53,7 @@ class MetaHelper extends ViewHelperCollection
      */
     public function current()
     {
-        list($name, $content) = $this->members[$this->pointer];
+        [$name, $content] = $this->members[$this->pointer];
         if (is_a($content, ViewHelperInterface::class)) {
             /** @var $content ViewHelperInterface */
             return $content->__toString();

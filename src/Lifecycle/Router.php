@@ -1,11 +1,11 @@
 <?php
 
-namespace JasperFW\JasperCore\Lifecycle;
+namespace JasperFW\JasperFW\Lifecycle;
 
 use Exception;
-use JasperFW\JasperCore\Exception\NoRouteMatchException;
+use JasperFW\JasperFW\Exception\NoRouteMatchException;
 
-use function JasperFW\JasperCore\J;
+use function JasperFW\JasperFW\J;
 
 /**
  * Class Router
@@ -13,7 +13,7 @@ use function JasperFW\JasperCore\J;
  * Simply put, the router takes a requested URI and routes the request to the appropriate Module, Controller and action
  * following the routing rules that are set in the framework's configuration file.
  *
- * @package JasperFW\JasperCore\Lifecycle
+ * @package JasperFW\JasperFW\Lifecycle
  */
 class Router
 {

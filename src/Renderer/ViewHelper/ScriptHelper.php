@@ -6,9 +6,9 @@
  * Time: 12:06 AM
  */
 
-namespace JasperFW\JasperCore\Renderer\ViewHelper;
+namespace JasperFW\JasperFW\Renderer\ViewHelper;
 
-use JasperFW\JasperCore\Jasper;
+use JasperFW\JasperFW\Jasper;
 
 /**
  * The ScriptHelper is used to define scripts that should be contained in the header. Scripts can be passed in a

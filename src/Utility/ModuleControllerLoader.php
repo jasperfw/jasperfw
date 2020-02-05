@@ -1,11 +1,11 @@
 <?php
-namespace JasperFW\JasperCore\Utility;
+namespace JasperFW\JasperFW\Utility;
 
 use Exception;
-use JasperFW\JasperCore\Jasper;
-use JasperFW\JasperCore\Lifecycle\Response;
+use JasperFW\JasperFW\Jasper;
+use JasperFW\JasperFW\Lifecycle\Response;
 
-use function JasperFW\JasperCore\J;
+use function JasperFW\JasperFW\J;
 
 /**
  * Class ModuleControllerLoader

@@ -1,13 +1,12 @@
 <?php
-namespace JasperFW\JasperCore\Renderer;
+namespace JasperFW\JasperFW\Renderer;
 
-
-use JasperFW\JasperCore\Jasper;
-use JasperFW\JasperCore\Lifecycle\Response;
+use JasperFW\JasperFW\Jasper;
+use JasperFW\JasperFW\Lifecycle\Response;
 
 class CLIRenderer extends Renderer
 {
-    public function render(Response $response) : void
+    public function render(Response $response): void
     {
         echo "Variables\n";
         var_dump($response->getVariables());

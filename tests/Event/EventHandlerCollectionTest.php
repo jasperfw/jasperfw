@@ -1,16 +1,18 @@
 <?php
 
-namespace JasperFW\JasperCoreTests\Event;
+namespace JasperFW\JasperFWTests\Event;
 
+use JasperFW\JasperFW\Event\EventHandler;
+use JasperFW\JasperFW\Event\EventHandlerCollection;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use JasperFW\JasperCore\Event\EventHandler;
-use JasperFW\JasperCore\Event\EventHandlerCollection;
 
 class EventHandlerCollectionTest extends TestCase
 {
 
     public function testExecute()
     {
+        /** @var EventHandler|MockObject $eh */
         $eh = $this->getMockBuilder(EventHandler::class)->disableOriginalConstructor()->onlyMethods(
             ['execute', 'getEvent']
         )->getMock();

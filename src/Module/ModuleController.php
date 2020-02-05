@@ -1,17 +1,17 @@
 <?php
-namespace JasperFW\JasperCore\Module;
+namespace JasperFW\JasperFW\Module;
 
 use ReflectionClass;
 use ReflectionException;
 
-use function JasperFW\JasperCore\J;
+use function JasperFW\JasperFW\J;
 
 /**
  * Class ModuleController
  *
  * Module controllers should extend this class.
  *
- * @package JasperFW\JasperCore\Module
+ * @package JasperFW\JasperFW\Module
  */
 abstract class ModuleController
 {
