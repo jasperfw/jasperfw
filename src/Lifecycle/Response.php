@@ -190,6 +190,7 @@ class Response
     public function setStatusCode(int $statusCode): void
     {
         $this->statusCode = $statusCode;
+        J()->log->info('Status code changed: {0}', [$statusCode, debug_backtrace()[0]]);
     }
 
     /**
@@ -231,6 +232,8 @@ class Response
         $this->setController('index');
         $this->setAction('index');
         $this->setViewType('');
+        // Unset any already set view file
+        $this->viewFile = null;
     }
 
     /**
@@ -357,9 +360,9 @@ class Response
             } elseif ($key === 'defaultViewType') {
                 $this->defaultViewType = $configuration;
             } elseif ($key === 'default_layout_path') {
-                $this->layoutPath = $configuration;
+                $this->setLayoutPath($configuration);
             } elseif ($key === 'default_layout_file') {
-                $this->layoutFile = $configuration;
+                $this->setLayoutFile($configuration);
             } else {
                 $this->__set($key, $configuration);
             }

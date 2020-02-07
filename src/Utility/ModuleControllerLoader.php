@@ -17,31 +17,25 @@ class ModuleControllerLoader
 {
     /**
      * Load the requested module/controller/action
-     * @param Response $response The response managing the process
+     *
+     * @param bool $checkStatus Set to false if this is generating error output or if for any other reason the HTTP
+     *                          status should not be checked.
+     *
+     * @throws Exception Rethrows any exception that falls through the loaded class and function
      */
-    public function load(Response $response): void
+    public function load(bool $checkStatus = true): void
     {
+        $response = J()->response;
         $this->checkModule($response);
-        if ($response->getStatusCode() === 200) {
+        if ($response->getStatusCode() === 200 || !$checkStatus) {
             try {
                 $this->loadModule($response);
             } catch (Exception $exception) {
-                // If an exception is thrown in the code and not caught, switch over to the error handler
+                // If an exception is thrown in the code and not caught, set status code 500 (internal error)
                 J()->log->warning('An Exception happened: ' . $exception->getMessage(), $exception->getTrace());
                 $response->setStatusCode(500);
+                throw $exception;
             }
-        }
-    }
-
-    /**
-     * If the status of the response is not 200, runs the error module.
-     *
-     * @param Response $response The response object
-     */
-    public function loadError(Response $response): void
-    {
-        if ($response->getStatusCode() !== 200) {
-            $this->loadErrorModule($response);
         }
     }
 
@@ -95,29 +89,6 @@ class ModuleControllerLoader
             [$the_module, $this->getActionMethodName($response->getAction())],
             [$response->getVariables()]
         );
-    }
-
-    /**
-     * Load an error module based on the error code.
-     *
-     * @param Response $response
-     */
-    public function loadErrorModule(Response $response): void
-    {
-        $fqn = $this->getFullyQualifiedClass('index', 'index');
-        $the_module = new $fqn();
-        $action = $this->getActionMethodName((string)$response->getStatusCode());
-        if (method_exists($fqn, $action)) {
-            call_user_func_array([$the_module, $action], [$response->getVariables()]);
-        } elseif (method_exists($fqn, $this->getActionMethodName('index'))) {
-            call_user_func_array([$the_module, $this->getActionMethodName('index')], [$response->getVariables()]);
-        } else {
-            // There is no error handler for this error, show the index but don't pass variables
-            $fqn = $this->getFullyQualifiedClass('index', 'index');
-            $the_module = new $fqn();
-            $action = $this->getActionMethodName('index');
-            call_user_func_array([$the_module, $action], []);
-        }
     }
 
     /**

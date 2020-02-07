@@ -28,15 +28,20 @@ class Router
     }
 
     /**
-     * Do the routing
+     * Do the routing. By default this uses path information set in the request object. However, if a new path is passed
+     * the router will use that new path and override what is set in request. This will also update the request object.
      *
-     * @param Request  $request  The request container
-     * @param Response $response The object managing the response to the request
+     * @param string|null $path An optional path to route to. Basically an internal redirect.
      *
      * @throws Exception
      */
-    public function route(Request $request, Response $response): void
+    public function route(string $path = null): void
     {
+        $request = J()->request;
+        $response = J()->response;
+        if ($path != null) {
+            $request->setURI($path);
+        }
         $this->reroutes++;
         if ($this->reroutes > 10) {
             J()->log->critical('The request for ' . $request->getURI() . ' has redirected too many times!');
@@ -69,6 +74,10 @@ class Router
         $response->setViewType($this->determineViewType($request->getExtension()));
     }
 
+    public function reRoute(string $route)
+    {
+    }
+
     /**
      * Take the url pieces and compare them to the routes set in the configuration file to extract variables.
      *
@@ -89,7 +98,7 @@ class Router
             throw new NoRouteMatchException('Unable to route url ' . $url);
         }
         $route_name = array_shift($matches);
-        J()->log->debug('URL matched route ' . $route_name);
+        J()->log->debug('URL {0} matched route ' . $route_name, [implode('/', $url_array)]);
         $route_config = $this->route_definitions[$route_name];
         $return = (isset($route_config['defaults'])) ? $route_config['defaults'] : [];
         foreach ($matches as $name => $match) {
@@ -115,6 +124,7 @@ class Router
                 $matches[0] = $name;
                 return $matches;
             }
+            J()->log->debug('{0} did not match route {1}', [$url, $name, $route['regex']]);
         }
         return false;
     }
