@@ -130,6 +130,7 @@ class Jasper
      * Function initializes the framework object.
      *
      * @return Jasper
+     * @throws Exception
      */
     public static function _init(): Jasper
     {
@@ -150,8 +151,10 @@ class Jasper
             exit();
         }
         // Initialize the Request and Response objects
+        static::$framework->fireEvent('parsingrequest');
         static::$framework->request = new Request();
         static::$framework->response = new Response();
+        static::$framework->fireEvent('requestparsed');
         // Return the framework
         return static::$framework;
     }
@@ -167,29 +170,45 @@ class Jasper
         $this->mcl = new ModuleControllerLoader();
     }
 
+    /**
+     * Execute the request.
+     *
+     * @throws Exception
+     */
     public function run(): void
     {
+        // Try standard routing
         try {
-            $this->fireEvent('parsingrequest');
-            $this->fireEvent('requestparsed');
             $this->fireEvent('beforeroute');
-            $this->router->route($this->request, $this->response);
+            $this->router->route();
             $this->fireEvent('afterroute');
+            if ($this->response->getStatusCode() !== 200) {
+                throw new Exception($this->response->getStatusCode());
+            }
             $this->fireEvent('beforeload');
-            $this->mcl->load($this->response);
+            $this->mcl->load();
             $this->fireEvent('afterload');
+            if ($this->response->getStatusCode() !== 200) {
+                throw new Exception($this->response->getStatusCode());
+            }
+        } catch (Exception $exception) {
+            // Trigger the error handler
             $this->fireEvent('beforeerrorhandling');
-            $this->mcl->loadError($this->response);
+            $this->router->route('/error/error' . $this->response->getStatusCode());
+            $this->mcl->load(false);
             $this->fireEvent('aftererrorhandling');
+        }
+        // Try rendering the request
+        try {
             $this->fireEvent('beforerender');
             $this->response->render();
             $this->fireEvent('afterrender');
-            $this->fireEvent('beginshutdown');
         } catch (Exception $exception) {
-            // If an uncaught exception gets here, there isn't much we can really do but log it and show a basic error
-            echo 'Error 500 - An unexpected error has occurred.';
-            $this->log->critical('An uncaught exception occurred. ' . $exception->getMessage());
+            // If an exception happens in the renderer itelf, we have to output a plain text error.
+            echo 'Error 500 - An unexpected error has occurred in the renderer. ' . $exception->getMessage();
+            $this->log->critical('An rendering exception occurred. ' . $exception->getMessage());
         }
+        $this->fireEvent('beginshutdown');
     }
 
     /**
@@ -217,6 +236,8 @@ class Jasper
                 return $this->response;
             case 'router':
                 return $this->router;
+            case 'mcl':
+                return $this->mcl;
             default:
                 return null;
         }
