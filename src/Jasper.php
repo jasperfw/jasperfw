@@ -130,7 +130,6 @@ class Jasper
      * Function initializes the framework object.
      *
      * @return Jasper
-     * @throws Exception
      */
     public static function _init(): Jasper
     {
@@ -172,8 +171,6 @@ class Jasper
 
     /**
      * Execute the request.
-     *
-     * @throws Exception
      */
     public function run(): void
     {
@@ -193,10 +190,16 @@ class Jasper
             }
         } catch (Exception $exception) {
             // Trigger the error handler
-            $this->fireEvent('beforeerrorhandling');
-            $this->router->route('/error/error' . $this->response->getStatusCode());
-            $this->mcl->load(false);
-            $this->fireEvent('aftererrorhandling');
+            try {
+                $this->fireEvent('beforeerrorhandling');
+                $this->router->route('/error/error' . $this->response->getStatusCode());
+                $this->mcl->load(false);
+                $this->fireEvent('aftererrorhandling');
+            } catch (Exception $exception) {
+                // If an exception happens in the renderer itelf, we have to output a plain text error.
+                echo 'Error 500 - An unexpected error has occurred in the renderer. ' . $exception->getMessage();
+                $this->log->error('An error handling exception occurred. ' . $exception->getMessage());
+            }
         }
         // Try rendering the request
         try {
@@ -206,7 +209,7 @@ class Jasper
         } catch (Exception $exception) {
             // If an exception happens in the renderer itelf, we have to output a plain text error.
             echo 'Error 500 - An unexpected error has occurred in the renderer. ' . $exception->getMessage();
-            $this->log->critical('An rendering exception occurred. ' . $exception->getMessage());
+            $this->log->error('An rendering exception occurred. ' . $exception->getMessage());
         }
         $this->fireEvent('beginshutdown');
     }
@@ -264,7 +267,6 @@ class Jasper
      * @param EventHandler $listener
      *
      * @return Jasper
-     * @throws Exception
      *
      */
     public function registerEventHandler(EventHandler $listener): Jasper
@@ -283,7 +285,6 @@ class Jasper
      * @param array  $arguments    Optional parameters to pass to the method
      *
      * @return Jasper
-     * @throws Exception
      */
     public function on(string $event, $class_or_obj, string $method, array $arguments = []): Jasper
     {
@@ -295,8 +296,6 @@ class Jasper
      * Register a callback to be run before the renderer is called
      *
      * @param string $event The name of the event being fired
-     *
-     * @throws Exception
      */
     public function fireEvent(string $event): void
     {
