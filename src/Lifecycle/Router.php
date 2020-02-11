@@ -169,6 +169,9 @@ class Router
         if (PHP_SAPI === 'cli' || PHP_SAPI === 'cli-server') {
             // Extension is irrelevant, use the cli renderer
             return 'c l i';
+        } elseif (false !== strpos($extension, ' ')) {
+            // If the extension contains a space, go to the default type - spaces are for special cases only
+            return '';
         } elseif (!is_null($extension)) {
             return $extension;
         }

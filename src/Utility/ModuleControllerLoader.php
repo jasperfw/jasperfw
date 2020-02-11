@@ -56,7 +56,6 @@ class ModuleControllerLoader
             return;
         }
         if (!call_user_func($namespaced_class . '::canView')) {
-            var_dump($namespaced_class);
             $response->setStatusCode(403);
             Jasper::i()->log->error('User is not authorized to view ' . $namespaced_class);
             return;
