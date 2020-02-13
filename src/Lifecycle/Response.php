@@ -53,6 +53,10 @@ class Response
     protected $renderers;
     /** @var array Mapping of file extensions to renderer names. * is default */
     protected $extensionMap;
+    /** @var string The filename to use if the file is being downloaded via a file type renderer (xml, csv, etc) */
+    protected $downloadFileName;
+    /** @var bool True if the file should be forced to be downloaded it if is being handled by a file type downloader */
+    protected $isDownload = false;
 
     /**
      * Response constructor.
@@ -97,20 +101,26 @@ class Response
      *
      * @param string $key   The name of the value
      * @param mixed  $value The value, may be a string or other object
+     *
+     * @return Response
      */
-    public function setValue(string $key, $value): void
+    public function setValue(string $key, $value): Response
     {
         $this->values[$key] = $value;
+        return $this;
     }
 
     /**
      * Add multiple values at once. Any existing values with duplicate keys will be replaced with the new value.
      *
      * @param array $values The new values
+     *
+     * @return Response
      */
-    public function setValues(array $values): void
+    public function setValues(array $values): Response
     {
         $this->values = array_merge($this->values, $values);
+        return $this;
     }
 
     /**
@@ -126,10 +136,13 @@ class Response
      * not have any data set at all.
      *
      * @param mixed $data The core data of the response.
+     *
+     * @return Response
      */
-    public function setData($data): void
+    public function setData($data): Response
     {
         $this->data = $data;
+        return $this;
     }
 
     /**
@@ -146,10 +159,13 @@ class Response
      *
      * @param array $getVars  The variables that were part of the get
      * @param array $postVars The variables that were part of the post
+     *
+     * @return Response
      */
-    public function setVariables(array $getVars, array $postVars): void
+    public function setVariables(array $getVars, array $postVars): Response
     {
         $this->variables = array_merge($getVars, $postVars);
+        return $this;
     }
 
     /**
@@ -166,10 +182,13 @@ class Response
      * Set an error message
      *
      * @param string $message
+     *
+     * @return Response
      */
-    public function addMessage(string $message): void
+    public function addMessage(string $message): Response
     {
         $this->messages[] = $message;
+        return $this;
     }
 
     /**
@@ -186,17 +205,20 @@ class Response
      * Set the status code to return with the request
      *
      * @param int $statusCode The HTTP status code to send with the request
+     *
+     * @return Response
      */
-    public function setStatusCode(int $statusCode): void
+    public function setStatusCode(int $statusCode): Response
     {
         $this->statusCode = $statusCode;
         J()->log->info('Status code changed: {0}', [$statusCode, debug_backtrace()[0]]);
+        return $this;
     }
 
     /**
      * Get the HTTP status code
      *
-     * @return int
+     * @return int The HTTP response code
      */
     public function getStatusCode(): int
     {
@@ -226,7 +248,7 @@ class Response
      * Reset the Module Controller and Action values to "index" This is useful when rerouting or doing an internal
      * redirect to ensure prior values are removed.
      */
-    public function resetMCAValues()
+    public function resetMCAValues(): Response
     {
         $this->setModule('index');
         $this->setController('index');
@@ -234,16 +256,20 @@ class Response
         $this->setViewType('');
         // Unset any already set view file
         $this->viewFile = null;
+        return $this;
     }
 
     /**
      * Set the module that was requested
      *
      * @param string $module
+     *
+     * @return Response
      */
-    public function setModule(string $module): void
+    public function setModule(string $module): Response
     {
         $this->module = $module;
+        return $this;
     }
 
     /**
@@ -260,10 +286,13 @@ class Response
      * Set the controller that was requested
      *
      * @param string $controller
+     *
+     * @return Response
      */
-    public function setController(string $controller): void
+    public function setController(string $controller): Response
     {
         $this->controller = $controller;
+        return $this;
     }
 
     /**
@@ -280,10 +309,13 @@ class Response
      * Set the action that was requested
      *
      * @param string $action
+     *
+     * @return Response
      */
-    public function setAction(string $action): void
+    public function setAction(string $action): Response
     {
         $this->action = $action;
+        return $this;
     }
 
     /**
@@ -302,14 +334,18 @@ class Response
      * allowed types.
      *
      * @param string $viewType The view type
+     *
+     * @return Response
      */
-    public function setViewType(string $viewType): void
+    public function setViewType(string $viewType): Response
     {
         $this->viewType = $viewType;
+        return $this;
     }
 
     /**
      * Gets the view type. The renderer is based on the final view type set when render() is called.
+     *
      * @return string The view type
      */
     public function getViewType(): string
@@ -318,7 +354,52 @@ class Response
     }
 
     /**
+     * Set the download file name if the response will be served by a file type renderer.
+     *
+     * @param string $fileName The download file name.
+     *
+     * @return Response This
+     */
+    public function setDownloadFileName(string $fileName): Response
+    {
+        $this->downloadFileName = $fileName;
+        return $this;
+    }
+
+    /**
+     * Get the download file name that will be added if this is rendered as a file download.
+     *
+     * @return string The file name
+     */
+    public function getDownloadFileName(): string
+    {
+        return $this->downloadFileName;
+    }
+
+    /**
+     * Call this method to tell a file type renderer to force the download of the file via HTTP headers.
+     *
+     * @return Response
+     */
+    public function setIsDownload(): Response
+    {
+        $this->isDownload = true;
+        return $this;
+    }
+
+    /**
+     * Check if the isDownload option is set
+     *
+     * @return bool True if the file should be forced download when rendered by file type renderer
+     */
+    public function isDownload(): bool
+    {
+        return $this->isDownload;
+    }
+
+    /**
      * Get the renderer based on the request file extension
+     *
      * @return Renderer
      * @throws RenderingException
      */
@@ -397,9 +478,10 @@ class Response
         }
     }
 
-    public function setLayoutFile(string $layoutFile): void
+    public function setLayoutFile(string $layoutFile): Response
     {
         $this->layoutFile = $layoutFile;
+        return $this;
     }
 
     /**
@@ -419,10 +501,13 @@ class Response
      * The name of the view file to be used in rendering
      *
      * @param string $viewFile The filename
+     *
+     * @return Response
      */
-    public function setViewFile(string $viewFile): void
+    public function setViewFile(string $viewFile): Response
     {
         $this->viewFile = $viewFile;
+        return $this;
     }
 
     /**
@@ -437,14 +522,16 @@ class Response
         return $this->viewFile;
     }
 
-    public function setLayoutPath(string $newPath): void
+    public function setLayoutPath(string $newPath): Response
     {
         $this->layoutPath = $newPath;
+        return $this;
     }
 
-    public function setViewPath(string $newPath): void
+    public function setViewPath(string $newPath): Response
     {
         $this->viewPath = $newPath;
+        return $this;
     }
 
     /**
@@ -535,7 +622,7 @@ class Response
      * @return string
      * @throws Exception
      */
-    public function createLink($path, $include_locale = false)
+    public function createLink($path, $include_locale = false): string
     {
         $protocol = (J()->request->isSecure()) ? 'https:' : 'http:';
         $base = $this->getBaseURL($include_locale);
@@ -552,7 +639,7 @@ class Response
      *
      * @throws Exception
      */
-    public function getBaseURL($include_locale = true)
+    public function getBaseURL($include_locale = true): string
     {
         $base = '//' . $_SERVER['HTTP_HOST'] . str_replace('index.php', '', $_SERVER['URL']);
         if ($include_locale && J()->request->getLocale() !== null) {
@@ -561,7 +648,7 @@ class Response
         return $base;
     }
 
-    private function getLinkLocale($locale)
+    private function getLinkLocale($locale): string
     {
         if (false === strpos($locale, "-")) {
             return $locale . "-";
