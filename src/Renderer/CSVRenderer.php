@@ -15,8 +15,8 @@ class CSVRenderer extends DownloadableRenderer
         // Create an output stream to write to
         $file = fopen('php://output', 'w');
         // Assemble the values and output
-        if (isset($response->getVariables()['headers'])) {
-            fputcsv($file, $response->getVariables()['headers']);
+        if (isset($response->getValues()['headers'])) {
+            fputcsv($file, $response->getValues()['headers']);
         }
         foreach ($response->getData() as $row) {
             fputcsv($file, $row);
