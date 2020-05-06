@@ -67,7 +67,7 @@ class TwigRenderer extends Renderer
             foreach ($response->getValues()['twigFilters'] as $filter) {
                 if ($filter instanceof $filter_class_name) {
                     $this->twig->addFilter($filter);
-                    var_dump('Added.');
+                    //var_dump('Added.');
                 }
             }
         }
