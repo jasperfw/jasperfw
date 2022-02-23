@@ -17,13 +17,13 @@ use JasperFW\JasperFW\Renderer\Renderer;
 abstract class ViewHelperCollection extends Collection implements ViewHelperInterface
 {
     /** @var ViewHelper[] The items in the collection */
-    protected $members;
+    protected array $members;
     /** @var int The index of the current element */
-    protected $pointer;
+    protected int $pointer;
     /** @var Renderer|null A reference to the current renderer */
-    protected $renderer;
+    protected ?Renderer $renderer;
     /** @var string|null The name of the parent viewhelper collection */
-    protected $parent;
+    protected ?string $parent;
 
     public function __construct(?string $parent = null)
     {

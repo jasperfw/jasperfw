@@ -7,8 +7,8 @@ use JasperFW\JasperFW\Lifecycle\Response;
 
 class XMLRenderer extends DownloadableRenderer
 {
-    protected $contentType = 'application/xml; charset=utf-8';
-    protected $extension = 'xml';
+    protected string $contentType = 'application/xml; charset=utf-8';
+    protected string $extension = 'xml';
 
     public function render(Response $response): void
     {

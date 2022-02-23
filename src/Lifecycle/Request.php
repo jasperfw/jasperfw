@@ -15,35 +15,35 @@ use JasperFW\JasperFW\Jasper;
 class Request
 {
     /** @var string The HTTP method of the request. For CLI requests, this will be "CLI" */
-    protected $method;
+    protected mixed $method;
     /** @var string The requested URI */
-    protected $uri;
+    protected mixed $uri;
     /** @var array The query parameters */
-    protected $query;
+    protected array $query;
     /** @var string|bool The content type of the request body */
-    protected $contentType;
+    protected mixed $contentType;
     /** @var string The raw request body */
-    protected $requestBody_raw;
+    protected string $requestBody_raw;
     /** @var array The request body, parsed based on the content-type */
-    protected $requestBody = [];
+    protected array $requestBody = [];
     /** @var mixed The post contents */
-    protected $post;
+    protected mixed $post;
     /** @var string The base directory - use if the framework is not in the root of the domain */
-    protected $baseDirectory;
+    protected string $baseDirectory;
     /** @var string The locale as determined from the request URI */
-    protected $locale;
+    protected string $locale;
     /** @var string The IP address of the remote user. Attempts to resolve original IP address if there are proxies */
-    protected $remoteIP;
+    protected string $remoteIP;
     /** @var string The raw IP address of the remote user. This is the IP address passed by the server. */
-    protected $rawRemoteIP;
+    protected string $rawRemoteIP;
     /** @var string[] Array of uri pieces */
-    protected $uriPieces;
+    protected array $uriPieces;
     /** @var string The name of the file being requested */
-    protected $filename;
+    protected string $filename;
     /** @var string The extension of the file being requested */
-    protected $extension;
+    protected string $extension;
     /**@var string The request URI as a path that can be processed by the router */
-    protected $path;
+    protected string $path;
 
     /**
      * Request constructor.
@@ -149,7 +149,7 @@ class Request
      *
      * @return mixed The post data
      */
-    public function getPost()
+    public function getPost(): mixed
     {
         return $this->post;
     }
@@ -213,7 +213,7 @@ class Request
         // Remove the base folder if one is set
         if ($this->baseDirectory !== '') {
             $bd = '/' . $this->baseDirectory;
-            if (substr($url, 0, strlen($bd)) == $bd) {
+            if (str_starts_with($url, $bd)) {
                 $url = substr($url, strlen($bd));
             }
         }

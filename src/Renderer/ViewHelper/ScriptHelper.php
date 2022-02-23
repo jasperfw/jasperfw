@@ -18,7 +18,7 @@ use JasperFW\JasperFW\Jasper;
 class ScriptHelper extends ViewHelperCollection
 {
     /** @var array The scripts */
-    protected $scripts;
+    protected array $scripts;
 
     /**
      * Creates the array to hold the scripts
@@ -52,7 +52,7 @@ class ScriptHelper extends ViewHelperCollection
     public function append()
     {
         $script = $this->parseArgs(func_get_args());
-        if ($script !== false && !in_array($script, $this->members)) array_push($this->members, $script);
+        if ($script !== false && !in_array($script, $this->members)) $this->members[] = $script;
     }
 
     /**
@@ -69,7 +69,7 @@ class ScriptHelper extends ViewHelperCollection
      * in this function.
      * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->members[$this->pointer];
     }
@@ -91,17 +91,18 @@ class ScriptHelper extends ViewHelperCollection
 
     /**
      * Builds the tag based on the passed info.
+     *
      * @param array $args
-     * @return string
+     *
+     * @return string|bool The tag, or false if the tag can't be created
      */
-    private function parseArgs(array $args) : string
+    private function parseArgs(array $args): string|bool
     {
-        if (!is_array($args)) return false;
         $components = array();
         if (count($args) == 1 && is_string($args[0])) {
             $components['src'] = $args[0];
             return $this->makeLink($components);
-        } elseif (count($args) == 1 && is_array($args)) {
+        } elseif (count($args) == 1) {
             $components = $args[0];
             return $this->makeLink($components);
         } elseif (count($args) == 2 && is_string($args[0]) && is_array($args[1])) {
@@ -109,7 +110,7 @@ class ScriptHelper extends ViewHelperCollection
             $components = $args[1];
             return $this->makeLink($components);
         } elseif (count($args) == 2 && is_string($args[0]) && is_string($args[1])) {
-            return '<script type="'.$args[1].'">'."\n".$args[0]."\n</script>\n";
+            return '<script type="' . $args[1] . '">' . "\n" . $args[0] . "\n</script>\n";
         }
         Jasper::i()->log->warning('Unable to interpret script. Not added.');
         return false;
@@ -122,15 +123,15 @@ class ScriptHelper extends ViewHelperCollection
      *
      * @return bool|string
      */
-    private function makeLink($args)
+    private function makeLink($args): bool|string
     {
         if (!isset($args['src'])) {
             Jasper::i()->log->warning('Unable to add header script, no src attribute.');
             return false;
         }
         $link = '<script';
-        foreach ($args as $key=>$value) {
-            $link .= ' '.$key.'="'.$value.'"';
+        foreach ($args as $key => $value) {
+            $link .= ' ' . $key . '="' . $value . '"';
         }
         $link .= '></script>';
         return $link;

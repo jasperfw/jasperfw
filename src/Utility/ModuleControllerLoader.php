@@ -4,7 +4,7 @@ namespace JasperFW\JasperFW\Utility;
 use Exception;
 use JasperFW\JasperFW\Jasper;
 use JasperFW\JasperFW\Lifecycle\Response;
-
+use JetBrains\PhpStorm\Pure;
 use function JasperFW\JasperFW\J;
 
 /**
@@ -96,7 +96,7 @@ class ModuleControllerLoader
      * @param string $controller_class
      * @return string
      */
-    protected function getFullyQualifiedClass(string $module_name, string $controller_class) : string
+    #[Pure] protected function getFullyQualifiedClass(string $module_name, string $controller_class): string
     {
         return 'Application\\Module\\' . $this->getModuleName($module_name) . '\\Controller\\' . $this->getControllerName($controller_class);
     }

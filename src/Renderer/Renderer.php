@@ -4,7 +4,6 @@ namespace JasperFW\JasperFW\Renderer;
 
 use Exception;
 use JasperFW\JasperFW\Lifecycle\Response;
-
 use function JasperFW\JasperFW\J;
 
 /**
@@ -61,7 +60,7 @@ abstract class Renderer
      *
      * @return string
      */
-    public function generateURL($route_name, $variables = []): string
+    public function generateURL(string $route_name, array $variables = []): string
     {
         return J()->response->generateURL($route_name, $variables);
     }
@@ -76,7 +75,7 @@ abstract class Renderer
      * @return string
      * @throws Exception
      */
-    public function createLink($path, $include_locale = false)
+    public function createLink(string $path, bool $include_locale = false)
     {
         return J()->response->createLink($path, $include_locale);
     }
@@ -91,7 +90,7 @@ abstract class Renderer
      *
      * @throws Exception
      */
-    public function getBaseURL($include_locale = true)
+    public function getBaseURL(bool $include_locale = true)
     {
         return J()->response->getBaseURL($include_locale);
     }

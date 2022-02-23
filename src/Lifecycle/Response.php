@@ -6,6 +6,7 @@ use JasperFW\JasperFW\Exception\RenderingException;
 use JasperFW\JasperFW\Jasper;
 use JasperFW\JasperFW\Renderer\Renderer;
 use JasperFW\JasperFW\Renderer\ViewHelper\ViewHelper;
+use JetBrains\PhpStorm\Pure;
 use function JasperFW\JasperFW\J;
 
 /**
@@ -17,45 +18,45 @@ use function JasperFW\JasperFW\J;
 class Response
 {
     /** @var int The HTTP status code */
-    protected $statusCode = 200;
+    protected int $statusCode = 200;
     /** @var Renderer The renderer that will be managing the output */
-    protected $renderer;
+    protected Renderer $renderer;
     /** @var array The variables passed as part of the request */
-    protected $variables = [];
+    protected array $variables = [];
     /** @var string[] Error messages and other output strings */
-    protected $messages = [];
+    protected array $messages = [];
     /** @var array The values that may be embedded into the rendered view returned to the client */
-    protected $values = [];
+    protected array $values = [];
     /** @var mixed The data payload of the response - typically an array */
-    protected $data;
+    protected mixed $data;
     /** @var string The default renderer type */
-    protected $defaultViewType;
+    protected string $defaultViewType;
     /** @var string The renderer type */
-    protected $viewType;
+    protected string $viewType;
     /** @var string the Module the router has routed to */
-    protected $module;
+    protected string $module;
     /** @var string The Controller the router has routed to */
-    protected $controller;
+    protected string $controller;
     /** @var string The Action the router has routed to */
-    protected $action;
+    protected string $action;
     /** @var string The path to the layout file */
-    protected $layoutPath;
+    protected string $layoutPath;
     /** @var string The name of the layout file */
-    protected $layoutFile;
+    protected string $layoutFile;
     /** @var string The path to the view file */
-    protected $viewPath;
+    protected string $viewPath;
     /** @var string The filename of the view file */
-    protected $viewFile;
+    protected string $viewFile;
     /** @var ViewHelper[] The view helpers */
     //protected $view_helpers;
     /** @var array List of renderers and their settings */
-    protected $renderers;
+    protected array $renderers;
     /** @var array Mapping of file extensions to renderer names. * is default */
-    protected $extensionMap;
+    protected array $extensionMap;
     /** @var string The filename to use if the file is being downloaded via a file type renderer (xml, csv, etc) */
-    protected $downloadFileName;
+    protected string $downloadFileName;
     /** @var bool True if the file should be forced to be downloaded it if is being handled by a file type downloader */
-    protected $isDownload = false;
+    protected bool $isDownload = false;
 
     /**
      * Response constructor.
@@ -73,7 +74,7 @@ class Response
      * @param string $name
      * @param mixed  $value
      */
-    public function __set(string $name, $value): void
+    public function __set(string $name, mixed $value): void
     {
         $this->setValue($name, $value);
     }
@@ -103,7 +104,7 @@ class Response
      *
      * @return Response
      */
-    public function setValue(string $key, $value): Response
+    public function setValue(string $key, mixed $value): Response
     {
         $this->values[$key] = $value;
         return $this;
@@ -138,7 +139,7 @@ class Response
      *
      * @return Response
      */
-    public function setData($data): Response
+    public function setData(mixed $data): Response
     {
         $this->data = $data;
         return $this;
@@ -148,7 +149,7 @@ class Response
      * Returns the core data payload of the response.
      * @return mixed The data for the response
      */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }
@@ -415,7 +416,7 @@ class Response
         }
         try {
             return new $renderClass();
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new RenderingException('Unable to instantiate Renderer ' . $renderClass);
         }
     }
@@ -488,11 +489,10 @@ class Response
      * Get the path to the view file. If no path has been set, uses the default path.
      * @return string The path to the view file
      */
-    public function getViewPath(): string
+    #[Pure] public function getViewPath(): string
     {
-        if ($this->viewPath === null) {
-            return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getModule(
-                ) . DS . 'View' . DS . $this->getController();
+        if (null === $this->viewPath) {
+            return _ROOT_PATH_ . DS . 'src' . DS . 'Module' . DS . $this->getModule() . DS . 'View' . DS . $this->getController();
         }
         return $this->viewPath;
     }
@@ -568,7 +568,7 @@ class Response
      *
      * @return string
      */
-    public function generateURL($route_name, $variables = []): string
+    public function generateURL(string $route_name, array $variables = []): string
     {
         // Make sure the route configuration has been loaded
         if (!isset($this->routes)) {
@@ -585,7 +585,7 @@ class Response
         $url = str_replace('[', '', $this->routes[$route_name]['route']);
         $url = str_replace(']', '', $url);
         foreach ($variables as $key => $value) {
-            if (false !== strpos($url, ':' . $key . ':')) {
+            if (str_contains($url, ':' . $key . ':')) {
                 // The variable is in the url, replace it
                 $url = str_replace(':' . $key . ':', $value, $url);
             } elseif ($key != 'controller' && $key != 'action' && $key != 'module') {
@@ -622,7 +622,7 @@ class Response
      * @return string
      * @throws Exception
      */
-    public function createLink($path, $include_locale = false): string
+    public function createLink(string $path, bool $include_locale = false): string
     {
         $protocol = (J()->request->isSecure()) ? 'https:' : 'http:';
         $base = $this->getBaseURL($include_locale);
@@ -639,7 +639,7 @@ class Response
      *
      * @throws Exception
      */
-    public function getBaseURL($include_locale = true): string
+    public function getBaseURL(bool $include_locale = true): string
     {
         $base = '//' . $_SERVER['HTTP_HOST'] . str_replace('index.php', '', $_SERVER['URL']);
         if ($include_locale && J()->request->getLocale() !== null) {
@@ -648,9 +648,16 @@ class Response
         return $base;
     }
 
-    private function getLinkLocale($locale): string
+    /**
+     * Calculates the locale from the link
+     *
+     * @param string $locale
+     *
+     * @return string The locale
+     */
+    private function getLinkLocale(string $locale): string
     {
-        if (false === strpos($locale, "-")) {
+        if (!str_contains($locale, "-")) {
             return $locale . "-";
         }
         return $locale;

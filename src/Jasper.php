@@ -32,25 +32,25 @@ use Psr\Log\NullLogger;
 class Jasper
 {
     /** @var Jasper The framework object - I know, singleton, evil, bad. */
-    private static $framework = null;
+    private static Jasper $framework;
     /** @var array Configuration file and folder paths */
-    protected static $configurations = [];
+    protected static array $configurations = [];
     /** @var ContainerInterface The dependency injection container */
-    protected static $container;
+    protected static ContainerInterface $container;
     /** @var LoggerInterface Reference to the log utility */
-    protected static $logger;
+    protected static LoggerInterface $logger;
     /** @var Response The response object stores information about the response, from routing to views */
-    protected $response;
+    protected Response $response;
     /** @var Request Container for information about the request */
-    protected $request;
+    protected Request $request;
     /** @var Router The router that determines the module controller and action to call */
-    protected $router;
+    protected Router $router;
     /** @var ModuleControllerLoader The loader for module controllers */
-    protected $mcl;
-    /** @var EventHandlerCollection */
-    protected $eventHandlers;
+    protected ModuleControllerLoader $mcl;
+    /** @var EventHandlerCollection The event handlers */
+    protected EventHandlerCollection $eventHandlers;
     /** @var Configuration The configuration manager */
-    protected $config;
+    protected Configuration $config;
 
     /**
      * Function accesses the Core framework object. Initializes the framwork if it has not been done already.
@@ -252,7 +252,7 @@ class Jasper
      * @param string $name  The name of the value being set
      * @param mixed  $value The value to set
      */
-    public function __set(string $name, $value): void
+    public function __set(string $name, mixed $value): void
     {
         switch ($name) {
             case 'locale':
@@ -286,7 +286,7 @@ class Jasper
      *
      * @return Jasper
      */
-    public function on(string $event, $class_or_obj, string $method, array $arguments = []): Jasper
+    public function on(string $event, mixed $class_or_obj, string $method, array $arguments = []): Jasper
     {
         $this->registerEventHandler(new EventHandler($event, $class_or_obj, $method, $arguments));
         return $this;

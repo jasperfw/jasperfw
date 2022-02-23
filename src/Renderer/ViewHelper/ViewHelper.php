@@ -14,18 +14,18 @@ use JasperFW\JasperFW\Lifecycle\Response;
  */
 abstract class ViewHelper implements ViewHelperInterface
 {
-    protected $values = [];
+    protected array $values = [];
     /** @var null|Response */
-    protected $response = null;
+    protected ?Response $response = null;
     /** @var string|null The name of the parent viewHelperCollection to which this item belongs */
-    protected $parent;
+    protected ?string $parent;
 
     /**
      * ViewHelper constructor.
      *
-     * @param null|string $parent The name of the parent view helper
+     * @param string|null $parent The name of the parent view helper
      */
-    public function __construct($parent = null)
+    public function __construct(string $parent = null)
     {
         $this->parent = $parent;
     }
@@ -34,7 +34,7 @@ abstract class ViewHelper implements ViewHelperInterface
      * The init function is called when a view helper is loaded. This function should look in the configuration to find
      * any initial settings for the view helper.
      *
-     * @param string|string[]|null $configuration The name of the settings in the config array
+     * @param string|null $configuration The name of the settings in the config array
      */
     public function init(?string $configuration = null): void
     {
@@ -47,7 +47,7 @@ abstract class ViewHelper implements ViewHelperInterface
      * @param string $name  The name of the value to set
      * @param mixed  $value The value to set
      */
-    public function __set(string $name, $value): void
+    public function __set(string $name, mixed $value): void
     {
         $this->values[$name] = $value;
     }

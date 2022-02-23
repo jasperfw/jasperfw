@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class EventHandlerTest extends TestCase
 {
-    protected $executions = 0;
+    protected int $executions = 0;
 
     public function testGetEvent()
     {

@@ -8,7 +8,6 @@
 
 namespace JasperFW\JasperFW\Renderer\ViewHelper;
 
-use Exception;
 use JasperFW\JasperFW\Jasper;
 
 /**
@@ -25,8 +24,7 @@ class StylesheetHelper extends ViewHelperCollection
      *
      * @param string|null $configuration The name of the settings array in the configuration
      *
-     * @return array|void
-     * @throws Exception
+     * @return void
      */
     public function init(?string $configuration = 'stylesheets'): void
     {
@@ -60,7 +58,7 @@ class StylesheetHelper extends ViewHelperCollection
     {
         $script = $this->parseArgs(func_get_args());
         if ($script !== false) {
-            array_push($this->members, $script);
+            $this->members[] = $script;
         }
     }
 
@@ -94,9 +92,9 @@ class StylesheetHelper extends ViewHelperCollection
      *
      * @param $args
      *
-     * @return bool
+     * @return bool|string
      */
-    private function parseArgs($args)
+    private function parseArgs($args): bool|string
     {
         if (!is_array($args)) {
             return false;
@@ -126,7 +124,7 @@ class StylesheetHelper extends ViewHelperCollection
      *
      * @return bool|string
      */
-    private function makeLink($args)
+    private function makeLink($args): bool|string
     {
         if (!isset($args['href'])) {
             Jasper::i()->log->warning('Unable to add stylesheet, no href attribute.');

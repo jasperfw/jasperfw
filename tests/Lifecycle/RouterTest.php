@@ -12,9 +12,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 class RouterTest extends FrameworkTestCase
 {
     /** @var MockObject|Request */
-    protected $request;
+    protected Request|MockObject $request;
     /** @var MockObject|Response */
-    protected $response;
+    protected MockObject|Response $response;
 
     public function setUp(): void
     {

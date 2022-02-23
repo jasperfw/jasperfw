@@ -13,11 +13,11 @@ class HTTPUtilities
      * Parse the passed filename to get the name without the extension. If passed an array, uses the last element of the
      * array.
      *
-     * @param string|array $name
+     * @param array|string $name
      *
      * @return string
      */
-    public static function getFilename($name)
+    public static function getFilename(array|string $name): string
     {
         if (is_array($name)) {
             $name = array_pop($name);
@@ -28,11 +28,11 @@ class HTTPUtilities
     /**
      * Parse the passed filename to get the extension only. If passed an array, uses the last element of the array.
      *
-     * @param string|array $name
+     * @param array|string $name
      *
      * @return string
      */
-    public static function getFileExtension($name)
+    public static function getFileExtension(array|string $name): string
     {
         if (is_array($name)) {
             $name = array_pop($name);
@@ -48,11 +48,11 @@ class HTTPUtilities
      * Splits the passed filename into a name and extension and returns an array. The first element is the name, the
      * second is the extension.
      *
-     * @param string|array $name
+     * @param array|string $name
      *
      * @return string[] The first element is the name, the second element is the extension, or null if no extension
      */
-    private static function splitFilename($name)
+    private static function splitFilename(array|string $name): array
     {
         if (is_array($name)) {
             $name = array_pop($name);

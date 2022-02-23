@@ -20,9 +20,9 @@ use Twig\TwigFilter;
 class TwigRenderer extends Renderer
 {
     /** @var Environment */
-    protected $twig;
+    protected Environment $twig;
     /** @var FilesystemLoader */
-    protected $twig_loader;
+    protected FilesystemLoader $twig_loader;
 
     /**
      * @param Response $response

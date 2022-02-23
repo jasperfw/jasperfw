@@ -10,6 +10,7 @@ use JasperFW\JasperFW\Renderer\ViewHelper\MetaHelper;
 use JasperFW\JasperFW\Renderer\ViewHelper\StylesheetHelper;
 use JasperFW\JasperFW\Renderer\ViewHelper\TitleHelper;
 use JasperFW\JasperFW\Testing\FrameworkTestCase;
+use JetBrains\PhpStorm\ArrayShape;
 
 class ResponseTest extends FrameworkTestCase
 {
@@ -167,6 +168,7 @@ class ResponseTest extends FrameworkTestCase
         $this->mockConfig->method('getConfiguration')->with('view')->willReturn($viewArray);
     }
 
+    #[ArrayShape(['default_country' => "string", 'default_lang' => "string", 'defaultViewType' => "string", 'default_layout_path' => "string", 'default_layout_file' => "string", 'renderers' => "array[]"])]
     protected function getRenderersArray(): array
     {
         return [

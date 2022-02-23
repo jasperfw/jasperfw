@@ -15,8 +15,8 @@ use function JasperFW\JasperFW\J;
  */
 abstract class DownloadableRenderer extends Renderer
 {
-    protected $extension = '';
-    protected $contentType = 'text/text';
+    protected string $extension = '';
+    protected string $contentType = 'text/text';
 
     public function render(Response $response): void
     {

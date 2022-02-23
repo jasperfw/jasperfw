@@ -2,7 +2,6 @@
 namespace JasperFW\JasperFW\Utility;
 
 use JasperFW\JasperFW\Jasper;
-
 use function JasperFW\JasperFW\J;
 
 /**
@@ -20,9 +19,9 @@ use function JasperFW\JasperFW\J;
  */
 class Configuration
 {
-    protected $parsed_files = [];
-    protected $configuration = [];
-    static $iteration = 0;
+    protected array $parsed_files = [];
+    protected array $configuration = [];
+    static int $iteration = 0;
 
     public function __construct(array $configurationPaths)
     {

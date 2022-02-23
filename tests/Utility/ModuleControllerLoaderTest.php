@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 class ModuleControllerLoaderTest extends TestCase
 {
-    /** @var MockObject */
-    protected $mockResponse;
+    /** @var MockObject|Response */
+    protected MockObject|Response $mockResponse;
 
     public function testLoad()
     {

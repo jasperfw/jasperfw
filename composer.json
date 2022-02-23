@@ -10,13 +10,13 @@
   ],
   "require": {
     "ext-json": "*",
-    "jasperfw/core": "1.0.0",
-    "php": ">=7.2",
+    "jasperfw/core": "1.1.0",
+    "php": ">=8.1",
     "psr/container": "1.0.*",
     "psr/log": "1.0.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "~8.0",
+    "phpunit/phpunit": "~9.5",
     "mikey179/vfsstream": "1.6.8"
   },
   "suggest": {

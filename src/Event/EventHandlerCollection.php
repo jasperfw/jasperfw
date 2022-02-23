@@ -11,7 +11,7 @@ namespace JasperFW\JasperFW\Event;
 class EventHandlerCollection
 {
     /** @var EventHandler[] Array of callbacks */
-    protected $members;
+    protected array $members;
 
     /**
      * Add an event hanlder to the collection

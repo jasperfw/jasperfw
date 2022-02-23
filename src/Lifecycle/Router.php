@@ -4,7 +4,6 @@ namespace JasperFW\JasperFW\Lifecycle;
 
 use Exception;
 use JasperFW\JasperFW\Exception\NoRouteMatchException;
-
 use function JasperFW\JasperFW\J;
 
 /**
@@ -18,9 +17,9 @@ use function JasperFW\JasperFW\J;
 class Router
 {
     /** @var array Routes defined in the configuration */
-    protected $route_definitions;
+    protected array $route_definitions;
     /** @var int The number of times the request has been internally rerouted or redirected. */
-    private $reroutes;
+    private int $reroutes;
 
     public function __construct()
     {
@@ -53,7 +52,7 @@ class Router
         // Get the module and action if provided.
         try {
             $variables = $this->matchRoute($request->getUriPieces());
-        } catch (NoRouteMatchException $e) {
+        } catch (NoRouteMatchException) {
             $response->setStatusCode(404);
             J()->log->warning('The requested URL ' . $request->getURI() . ' could not be found.');
             $response->addMessage('The requested URL ' . $request->getURI() . ' could not be found.');
@@ -116,7 +115,7 @@ class Router
      *
      * @return array|bool
      */
-    protected function doRouteMatching($url)
+    protected function doRouteMatching(string $url): bool|array
     {
         $matches = array();
         foreach ($this->route_definitions as $name => $route) {
@@ -169,7 +168,7 @@ class Router
         if (PHP_SAPI === 'cli' || PHP_SAPI === 'cli-server') {
             // Extension is irrelevant, use the cli renderer
             return 'c l i';
-        } elseif (false !== strpos($extension, ' ')) {
+        } elseif (str_contains($extension, ' ')) {
             // If the extension contains a space, go to the default type - spaces are for special cases only
             return '';
         } elseif (!is_null($extension)) {

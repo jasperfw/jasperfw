@@ -51,7 +51,7 @@ class MetaHelper extends ViewHelperCollection
      * in this function.
      * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         [$name, $content] = $this->members[$this->pointer];
         if (is_a($content, ViewHelperInterface::class)) {

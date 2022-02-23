@@ -2,13 +2,14 @@
 namespace JasperFW\JasperFW\Renderer;
 
 use JasperFW\JasperFW\Lifecycle\Response;
+use JetBrains\PhpStorm\NoReturn;
 
 class CSVRenderer extends DownloadableRenderer
 {
-    protected $contentType = 'text/csv';
-    protected $extension = 'csv';
+    protected string $contentType = 'text/csv';
+    protected string $extension = 'csv';
 
-    public function render(Response $response): void
+    #[NoReturn] public function render(Response $response): void
     {
         parent::render($response);
         // Create an output stream to write to

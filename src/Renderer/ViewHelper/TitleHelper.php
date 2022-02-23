@@ -19,11 +19,11 @@ use JasperFW\JasperFW\Jasper;
 class TitleHelper extends ViewHelper
 {
     /** @var  string The name of the site, usually obtained from the config files. */
-    protected $site_name;
+    protected string $site_name;
     /** @var  string The name of the page, usually set by the module controller or a model. */
-    protected $page_name;
+    protected string $page_name;
     /** @var  string The format of the page title */
-    protected $title_format = ':page_name: | :site_name:';
+    protected string $title_format = ':page_name: | :site_name:';
 
     /**
      * The init function is called when a view helper is loaded. This function should look in the configuration to find

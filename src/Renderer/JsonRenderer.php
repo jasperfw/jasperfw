@@ -5,8 +5,8 @@ use JasperFW\JasperFW\Lifecycle\Response;
 
 class JsonRenderer extends DownloadableRenderer
 {
-    protected $contentType = 'application/json; charset=utf-8';
-    protected $extension = 'json';
+    protected string $contentType = 'application/json; charset=utf-8';
+    protected string $extension = 'json';
 
     public function render(Response $response): void
     {

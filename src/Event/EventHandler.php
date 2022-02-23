@@ -18,13 +18,13 @@ namespace JasperFW\JasperFW\Event;
 class EventHandler
 {
     /** @var string The name of the event upon which this handler will be called */
-    protected $event;
+    protected string $event;
     /** @var mixed The name of the class or the object to call the method on */
-    protected $object_or_class;
+    protected mixed $object_or_class;
     /** @var string The name of the method to call */
-    protected $method;
+    protected string $method;
     /** @var array The arguments to pass to the function */
-    protected $arguments;
+    protected array $arguments;
 
     /**
      * @param string $event           The name of the event triggering this callback
@@ -32,7 +32,7 @@ class EventHandler
      * @param string $method          The method to call
      * @param array  $arguments       Options to pass to the method
      */
-    public function __construct(string $event, $object_or_class, string $method, array $arguments = [])
+    public function __construct(string $event, mixed $object_or_class, string $method, array $arguments = [])
     {
         $this->event = $event;
         $this->object_or_class = $object_or_class;

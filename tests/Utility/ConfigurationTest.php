@@ -17,9 +17,9 @@ use org\bovigo\vfs\vfsStreamDirectory;
 class ConfigurationTest extends FrameworkTestCase
 {
     /** @var vfsStreamDirectory The virtual file system containing the config file to test */
-    protected $fileSystem;
+    protected vfsStreamDirectory $fileSystem;
     /** @var string The path to the config file */
-    protected $url;
+    protected string $url;
 
     public function setUp(): void
     {
