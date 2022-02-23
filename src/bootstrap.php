@@ -5,6 +5,9 @@
 
 use JasperFW\JasperFW\Jasper;
 
+// Declare $argv as a global variable to make it accessible.
+global $argv;
+
 // FUTURE: Enable the session handler
 //require_once('SessionHandler.php');
 //session_set_save_handler(new SessionHandler(), true);
@@ -14,7 +17,11 @@ date_default_timezone_set('UTC');
 // If this is being run as a command line application, parse the first argument as a GET request string
 if ('cli' == php_sapi_name()) {
     if (isset($argv)) {
+        $_SERVER['REQUST_URI'] = $argv[1];
+        // TODO: do this better
         parse_str(implode('&', array_slice($argv, 1)), $_GET);
+        $_SERVER['REQUEST_URI'] = $argv[1] . 
+        
         $_REQUEST = $_GET;
     }
 }
