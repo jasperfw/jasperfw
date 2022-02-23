@@ -13,7 +13,6 @@ class XMLRenderer extends DownloadableRenderer
     public function render(Response $response): void
     {
         parent::render($response);
-        $this->getHeaders();
         // Assemble the values and output
         $rootElement = $response->getValues()['rootElement'] ?? 'root';
         $xml = Array2XML::createXML($rootElement, $response->getData());

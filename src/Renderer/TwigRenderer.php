@@ -63,7 +63,7 @@ class TwigRenderer extends Renderer
     protected function parseFilters(Response $response)
     {
         $filter_class_name = TwigFilter::class;
-        if (is_array($response->getValues()['twigFilters'])) {
+        if (isset($response->getValues()['twigFilters']) && is_array($response->getValues()['twigFilters'])) {
             foreach ($response->getValues()['twigFilters'] as $filter) {
                 if ($filter instanceof $filter_class_name) {
                     $this->twig->addFilter($filter);

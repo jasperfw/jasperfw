@@ -2,6 +2,7 @@
 
 namespace JasperFW\JasperFW\Renderer;
 
+use JasperFW\JasperFW\Lifecycle\Response;
 use function JasperFW\JasperFW\J;
 
 /**
@@ -17,7 +18,13 @@ abstract class DownloadableRenderer extends Renderer
     protected $extension = '';
     protected $contentType = 'text/text';
 
-    protected function getHeaders()
+    public function render(Response $response): void
+    {
+        parent::render($response);
+        $this->setHeaders();
+    }
+
+    protected function setHeaders()
     {
         header('Cache-Control: no-cache, must-revalidate');
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');

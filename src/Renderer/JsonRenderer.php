@@ -11,8 +11,14 @@ class JsonRenderer extends DownloadableRenderer
     public function render(Response $response): void
     {
         parent::render($response);
-        $this->getHeaders();
         // Assemble the values and output
-        echo json_encode($response->getData(), JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
+        $output = $response->getValues();
+        if (count($response->getMessages()) > 0) {
+            $output['messages'] = $response->getMessages();
+        }
+        if (!is_null($response->getData())) {
+            $output['data'] = $response->getData();
+        }
+        echo json_encode($output, JSON_UNESCAPED_UNICODE);
     }
 }

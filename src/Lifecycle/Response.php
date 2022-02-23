@@ -6,7 +6,6 @@ use JasperFW\JasperFW\Exception\RenderingException;
 use JasperFW\JasperFW\Jasper;
 use JasperFW\JasperFW\Renderer\Renderer;
 use JasperFW\JasperFW\Renderer\ViewHelper\ViewHelper;
-
 use function JasperFW\JasperFW\J;
 
 /**
@@ -427,6 +426,7 @@ class Response
      */
     public function render()
     {
+        http_response_code($this->getStatusCode());
         $renderer = $this->getRenderer();
         $renderer->render($this);
     }

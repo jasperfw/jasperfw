@@ -20,6 +20,12 @@ class Request
     protected $uri;
     /** @var array The query parameters */
     protected $query;
+    /** @var string|bool The content type of the request body */
+    protected $contentType;
+    /** @var string The raw request body */
+    protected $requestBody_raw;
+    /** @var array The request body, parsed based on the content-type */
+    protected $requestBody = [];
     /** @var mixed The post contents */
     protected $post;
     /** @var string The base directory - use if the framework is not in the root of the domain */
@@ -46,6 +52,9 @@ class Request
     {
         $this->uri = $_SERVER['REQUEST_URI'] ?? '/';
         $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->contentType = (isset($_SERVER['CONTENT_TYPE'])) ? $_SERVER['CONTENT_TYPE'] : false;
+        $this->requestBody_raw = file_get_contents("php://input");
+        $this->parseRequestBody();
         $this->query = $_GET;
         $this->post = $_POST;
         $this->determineRemoteIP();
@@ -251,4 +260,30 @@ class Request
         $this->remoteIP = $ip;
     }
 
+    /**
+     * Based on the content type, parse the request body
+     *
+     * TODO: Replace this with a call to call_user_func that checks an array that can be set in configuration.
+     */
+    protected function parseRequestBody()
+    {
+        switch ($this->contentType) {
+            case 'application/x-www-form-urlencoded':
+                parse_str($this->requestBody_raw, $postVars);
+                foreach ($postVars as $field => $value) {
+                    $this->requestBody[$field] = $value;
+                }
+                return;
+            case 'application/json':
+                $body_params = json_decode($this->requestBody_raw);
+                if ($body_params) {
+                    foreach ($body_params as $field => $value) {
+                        $this->requestBody[$field] = $value;
+                    }
+                }
+                return;
+            default:
+                $this->requestBody = $_POST;
+        }
+    }
 }

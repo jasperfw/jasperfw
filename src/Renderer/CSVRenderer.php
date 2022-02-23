@@ -11,7 +11,6 @@ class CSVRenderer extends DownloadableRenderer
     public function render(Response $response): void
     {
         parent::render($response);
-        $this->getHeaders();
         // Create an output stream to write to
         $file = fopen('php://output', 'w');
         // Assemble the values and output
