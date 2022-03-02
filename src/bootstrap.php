@@ -20,8 +20,7 @@ if ('cli' == php_sapi_name()) {
         $_SERVER['REQUST_URI'] = $argv[1];
         // TODO: do this better
         parse_str(implode('&', array_slice($argv, 1)), $_GET);
-        $_SERVER['REQUEST_URI'] = $argv[1] . 
-        
+        $_SERVER['REQUEST_URI'] = $argv[1];
         $_REQUEST = $_GET;
     }
 }
