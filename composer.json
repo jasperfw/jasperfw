@@ -5,7 +5,7 @@
   "authors": [
     {
       "name": "William Eldridge",
-      "homepage": "http://wigedev.net"
+      "homepage": "https://wigedev.net"
     }
   ],
   "require": {
@@ -16,8 +16,8 @@
     "psr/log": "1.0.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "~9.5",
-    "mikey179/vfsstream": "1.6.8"
+    "phpunit/phpunit": "~9.0",
+    "mikey179/vfsstream": "^1.6.10"
   },
   "suggest": {
     "twig/twig": "If you will be using the TWIG template engine (^3.0)"

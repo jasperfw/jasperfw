@@ -32,10 +32,15 @@ class Request
     protected string $baseDirectory;
     /** @var string The locale as determined from the request URI */
     protected string $locale;
-    /** @var string The IP address of the remote user. Attempts to resolve original IP address if there are proxies */
-    protected string $remoteIP;
-    /** @var string The raw IP address of the remote user. This is the IP address passed by the server. */
-    protected string $rawRemoteIP;
+    /**
+     * @var string|null The IP address of the remote user. Attempts to resolve original IP address if there are proxies
+     */
+    protected ?string $remoteIP;
+    /**
+     * @var string|null The raw IP address of the remote user. This is the IP address passed by the server. May be null
+     *      if this is running as cli
+     */
+    protected ?string $rawRemoteIP;
     /** @var string[] Array of uri pieces */
     protected array $uriPieces;
     /** @var string The name of the file being requested */

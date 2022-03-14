@@ -43,14 +43,14 @@ class Response
     protected string $layoutPath;
     /** @var string The name of the layout file */
     protected string $layoutFile;
-    /** @var string The path to the view file */
-    protected string $viewPath;
-    /** @var string The filename of the view file */
-    protected string $viewFile;
+    /** @var string|null The path to the view file */
+    protected ?string $viewPath = null;
+    /** @var string|null The filename of the view file */
+    protected ?string $viewFile = null;
     /** @var ViewHelper[] The view helpers */
     //protected $view_helpers;
     /** @var array List of renderers and their settings */
-    protected array $renderers;
+    protected array $renderers = [];
     /** @var array Mapping of file extensions to renderer names. * is default */
     protected array $extensionMap;
     /** @var string The filename to use if the file is being downloaded via a file type renderer (xml, csv, etc) */
@@ -88,11 +88,7 @@ class Response
      */
     public function __get(string $name)
     {
-        if (isset($this->values[$name])) {
-            return $this->values[$name];
-        } else {
-            return null;
-        }
+        return $this->values[$name] ?? null;
     }
 
     /**

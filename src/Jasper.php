@@ -31,8 +31,8 @@ use Psr\Log\NullLogger;
  */
 class Jasper
 {
-    /** @var Jasper The framework object - I know, singleton, evil, bad. */
-    private static Jasper $framework;
+    /** @var Jasper|null The framework object - I know, singleton, evil, bad. */
+    private static ?Jasper $framework = null;
     /** @var array Configuration file and folder paths */
     protected static array $configurations = [];
     /** @var ContainerInterface The dependency injection container */

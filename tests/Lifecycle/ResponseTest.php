@@ -133,7 +133,7 @@ class ResponseTest extends FrameworkTestCase
         $array['renderers']['html']['extensions'] = ['php', 'html', 'htm'];
         $this->confConfigWithArray($array);
         $sut = new Response();
-        $sut->setViewType('');
+        //$sut->setViewType('');
         $this->assertEquals('html', $sut->getViewType());
     }
 
