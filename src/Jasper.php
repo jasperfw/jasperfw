@@ -35,8 +35,8 @@ class Jasper
     private static ?Jasper $framework = null;
     /** @var array Configuration file and folder paths */
     protected static array $configurations = [];
-    /** @var ContainerInterface The dependency injection container */
-    protected static ContainerInterface $container;
+    /** @var ContainerInterface|null The dependency injection container */
+    protected static ?ContainerInterface $container = null;
     /** @var LoggerInterface Reference to the log utility */
     protected static LoggerInterface $logger;
     /** @var Response The response object stores information about the response, from routing to views */
@@ -195,10 +195,10 @@ class Jasper
                 $this->router->route('/error/error' . $this->response->getStatusCode());
                 $this->mcl->load(false);
                 $this->fireEvent('aftererrorhandling');
-            } catch (Exception $exception) {
+            } catch (Exception $exception2) {
                 // If an exception happens in the renderer itelf, we have to output a plain text error.
                 echo 'Error 500 - An unexpected error has occurred in the renderer. ' . $exception->getMessage();
-                $this->log->error('An error handling exception occurred. ' . $exception->getMessage());
+                $this->log->error('An error handling exception occurred. ' . $exception2->getMessage());
             }
         }
         // Try rendering the request
@@ -221,7 +221,7 @@ class Jasper
      *
      * @return mixed The requested value, or false if it could not be found.
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         switch ($name) {
             case 'config':
