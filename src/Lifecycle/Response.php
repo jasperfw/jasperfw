@@ -28,7 +28,7 @@ class Response
     /** @var array The values that may be embedded into the rendered view returned to the client */
     protected array $values = [];
     /** @var mixed The data payload of the response - typically an array */
-    protected mixed $data;
+    protected mixed $data = null;
     /** @var string The default renderer type */
     protected string $defaultViewType;
     /** @var string The renderer type */
@@ -549,7 +549,7 @@ class Response
         }
         // If a base folder is set, add it.
         $base = J()->config->getConfiguration('framework')['base'] ?? null;
-        if ($base !== null) {
+        if ($base !== null && $base !== '') {
             $url = $base . '/' . $url;
         }
         return '/' . $url;
