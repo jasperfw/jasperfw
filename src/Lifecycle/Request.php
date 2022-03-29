@@ -30,8 +30,8 @@ class Request
     protected mixed $post;
     /** @var string The base directory - use if the framework is not in the root of the domain */
     protected string $baseDirectory;
-    /** @var string The locale as determined from the request URI */
-    protected string $locale;
+    /** @var string|null The locale as determined from the request URI */
+    protected ?string $locale;
     /**
      * @var string|null The IP address of the remote user. Attempts to resolve original IP address if there are proxies
      */
@@ -66,6 +66,7 @@ class Request
         $this->baseDirectory = Jasper::i()->config->getConfiguration('framework')['base'] ?? '';
         $this->processURI($this->uri);
         $this->path = implode('/', $this->uriPieces);
+        $this->locale = null;
     }
 
     /**
