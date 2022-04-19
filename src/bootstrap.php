@@ -11,7 +11,7 @@ global $argv;
 // FUTURE: Enable the session handler
 //require_once('SessionHandler.php');
 //session_set_save_handler(new SessionHandler(), true);
-if ('cli' !== php_sapi_name()) session_start();
+if ('cli' !== php_sapi_name() && session_status() !== PHP_SESSION_ACTIVE) session_start();
 date_default_timezone_set('UTC');
 
 // If this is being run as a command line application, parse the first argument as a GET request string
